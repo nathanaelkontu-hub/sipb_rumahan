@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIPB - Sistem Pemesanan Barang Rumahan</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style .card{
+    transition:0.2s;
+}
+
+.card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(0,0,0,0.06);
+}>
+* { font-family: 'Segoe UI', sans-serif; box-sizing: border-box; }
+tbody tr:hover{
+    background:#f8fafc;
+}
+body { margin: 0; background: #f8fafc; }
+.page { display: none; }
+.page.active { display: block; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; cursor: pointer; color: #64748b; font-size: 13px; font-weight: 500; transition: all 0.2s; margin-bottom: 2px; }
+.nav-item:hover { background: #f1f5f9; color: #1e293b; }
+.nav-item.active { background: #1e293b; color: white; }
+.card { background: white; border-radius: 14px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #f1f5f9; }
+.btn { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; }
+.btn-dark { background: #1e293b; color: white; }
+.btn-dark:hover { background: #0f172a; }
+.btn-outline-dark { background: white; border: 2px solid #1e293b; color: #1e293b; }
+.btn-outline-dark:hover { background: #1e293b; color: white; }
+.btn-outline-blue { background: white; border: 2px solid #6366f1; color: #6366f1; }
+.btn-outline-blue:hover { background: #6366f1; color: white; }
+.btn-green { background: #10b981; color: white; }
+.btn-red { background: #ef4444; color: white; }
+.btn-yellow { background: #f59e0b; color: white; }
+.btn-gray { background: #f1f5f9; color: #374151; }
+.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.badge-pending { background: #fef3c7; color: #d97706; }
+.badge-diproses { background: #dbeafe; color: #2563eb; }
+.badge-selesai { background: #d1fae5; color: #059669; }
+.badge-verifikasi { background: #ede9fe; color: #7c3aed; }
+.badge-aktif { background: #d1fae5; color: #059669; }
+.badge-nonaktif { background: #f3f4f6; color: #6b7280; }
+.badge-ban { background: #fee2e2; color: #dc2626; }
+.badge-diterima { background: #d1fae5; color: #059669; }
+.badge-ditolak { background: #fee2e2; color: #dc2626; }
+.input { width: 100%; padding: 9px 14px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 13px; outline: none; transition: border 0.2s; color: #374151; }
+.input:focus { border-color: #6366f1; }
+table { width: 100%; border-collapse: collapse; }
+th{
+    padding:18px 22px;
+    font-size:13px;
+    font-weight:700;
+    color:#0f172a;
+    background:white;
+}
+td{
+    padding:18px 22px;
+    font-size:13px;
+    color:#334155;
+    border-bottom:1px solid #f8fafc;
+}
+tr:hover td { background: #fafafa; }
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; align-items: center; justify-content: center; }
+.modal-bg.show { display: flex; }
+.modal-box { background: white; border-radius: 16px; padding: 28px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+.toast { position: fixed; top: 20px; right: 20px; z-index: 9999; background: white; border-radius: 10px; padding: 14px 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); border-left: 4px solid #10b981; display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; color: #1f2937; transform: translateX(120%); transition: transform 0.3s ease; min-width: 260px; }
+.toast.show { transform: translateX(0); }
+.chat-l { background: #f1f5f9; border-radius: 14px 14px 14px 4px; padding: 10px 14px; max-width: 75%; font-size: 13px; color: #374151; }
+.chat-r { background: #1e293b; border-radius: 14px 14px 4px 14px; padding: 10px 14px; max-width: 75%; font-size: 13px; color: white; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 2px; }
+.page-header { margin-bottom: 24px; }
+.page-header p { font-size: 13px; color: #94a3b8; margin: 0 0 4px; }
+.page-header h2 { font-size: 26px; font-weight: 800; color: #1e293b; margin: 0; line-height: 1.2; }
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span style="font-size:16px">✅</span>
+  <span id="toastMsg"></span>
+</div>
+
+<!-- ============ LOGIN ============ -->
+<div id="loginPage" style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f8fafc;">
+  <div style="background:white;border-radius:20px;padding:40px;width:100%;max-width:420px;margin:20px;box-shadow:0 4px 24px rgba(0,0,0,0.08);border:1px solid #f1f5f9;">
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="width:56px;height:56px;background:#1e293b;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+        <span style="font-size:24px;">🛒</span>
+      </div>
+      <h1 style="font-size:22px;font-weight:800;color:#1e293b;margin:0;">SIPB Rumahan</h1>
+      <p style="color:#94a3b8;font-size:13px;margin:6px 0 0;">Sistem Informasi Pemesanan Barang</p>
+    </div>
+    <div style="background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:20px;">
+      <p style="font-size:11px;font-weight:700;color:#64748b;margin:0 0 10px;text-transform:uppercase;letter-spacing:0.5px;">Login Cepat</p>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <button onclick="quickLogin('admin@sipb.com','123456')" style="background:white;border:1.5px solid #e2e8f0;border-radius:8px;padding:10px 14px;text-align:left;cursor:pointer;display:flex;align-items:center;gap:10px;width:100%;transition:border-color 0.2s;" onmouseover="this.style.borderColor='#1e293b'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <span style="background:#1e293b;color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;">ADMIN</span>
+          <span style="font-size:12px;color:#374151;">admin@sipb.com</span>
+        </button>
+        <button onclick="quickLogin('budi@email.com','123456')" style="background:white;border:1.5px solid #e2e8f0;border-radius:8px;padding:10px 14px;text-align:left;cursor:pointer;display:flex;align-items:center;gap:10px;width:100%;transition:border-color 0.2s;" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <span style="background:#10b981;color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;">PELANGGAN</span>
+          <span style="font-size:12px;color:#374151;">budi@email.com</span>
+        </button>
+        <button onclick="quickLogin('sari@email.com','123456')" style="background:white;border:1.5px solid #e2e8f0;border-radius:8px;padding:10px 14px;text-align:left;cursor:pointer;display:flex;align-items:center;gap:10px;width:100%;transition:border-color 0.2s;" onmouseover="this.style.borderColor='#6366f1'" onmouseout="this.style.borderColor='#e2e8f0'">
+          <span style="background:#6366f1;color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;">PELANGGAN</span>
+          <span style="font-size:12px;color:#374151;">sari@email.com</span>
+        </button>
+      </div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:5px;">Email</label>
+      <input type="email" id="inEmail" class="input" placeholder="Masukkan email">
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:5px;">Password</label>
+      <input type="password" id="inPass" class="input" placeholder="Masukkan password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div id="errMsg" style="color:#ef4444;font-size:12px;text-align:center;margin-bottom:10px;display:none;"></div>
+    <button onclick="doLogin()" class="btn btn-dark" style="width:100%;padding:12px;font-size:14px;border-radius:10px;">Masuk ke Sistem</button>
+  </div>
+</div>
+
+<!-- ============ MAIN APP ============ -->
+<div id="mainApp" style="display:none;min-height:100vh;">
+  <div style="display:flex;min-height:100vh;">
+
+    <!-- SIDEBAR -->
+    <div style="width:220px;background:white;border-right:1px solid #f1f5f9;display:flex;flex-direction:column;min-height:100vh;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;">
+
+      <!-- Logo -->
+      <div style="padding:20px 18px;border-bottom:1px solid #f1f5f9;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:36px;height:36px;background:#1e293b;border-radius:10px;display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:18px;">🛒</span>
+          </div>
+          <div>
+            <div style="color:#1e293b;font-weight:800;font-size:15px;line-height:1.2;">SIPB</div>
+            <div style="color:#94a3b8;font-size:10px;">Rumahan</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Info -->
+      <div style="padding:14px 16px;border-bottom:1px solid #f1f5f9;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div id="sbAvatar" style="width:36px;height:36px;border-radius:50%;background:#1e293b;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px;flex-shrink:0;"></div>
+          <div>
+            <div style="font-size:11px;color:#94a3b8;line-height:1;" id="sbRole"></div>
+            <div id="sbName" style="font-weight:700;font-size:13px;color:#1e293b;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nav -->
+      <nav style="flex:1;padding:10px 8px;" id="navLinks"></nav>
+
+      <!-- Logout -->
+      <div style="padding:10px 8px;border-top:1px solid #f1f5f9;">
+        <div onclick="doLogout()" class="nav-item" style="color:#ef4444;">
+          <svg style="width:16px;height:16px;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          <span>Keluar</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- KONTEN -->
+    <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+
+      <!-- Header -->
+      <div style="background:white;border-bottom:1px solid #f1f5f9;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;">
+        <div>
+          <div id="pgSub" style="font-size:11px;color:#94a3b8;"></div>
+          <div id="pgTitle" style="font-size:15px;font-weight:700;color:#1e293b;"></div>
+        </div>
+        <div style="background:#f8fafc;border-radius:8px;padding:7px 12px;display:flex;align-items:center;gap:8px;">
+          <div id="hdAvatar" style="width:28px;height:28px;border-radius:7px;background:#1e293b;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:11px;"></div>
+          <div>
+            <div id="hdName" style="font-size:12px;font-weight:700;color:#1e293b;"></div>
+            <div id="hdRole" style="font-size:10px;color:#94a3b8;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGES -->
+      <div style="flex:1;overflow-y:auto;padding:24px;" id="pageArea">
+
+        <!-- ===== DASHBOARD ADMIN ===== -->
+        <div id="pg-dashboard" class="page">
+          <div class="page-header">
+            <p>Beranda</p>
+            <h2>Order Barang</h2>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:22px;">
+            <div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                <div style="width:38px;height:38px;background:#f1f5f9;border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                  <svg style="width:18px;height:18px;" fill="none" stroke="#374151" stroke-width="2" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                </div>
+                <span style="font-size:11px;font-weight:600;color:#64748b;" id="statPesananBadge">+12.5% ...</span>
+              </div>
+              <div style="font-size:12px;color:#64748b;margin-bottom:4px;">Total Pesanan</div>
+              <div id="statTotalPesanan" style="font-size:26px;font-weight:800;color:#1e293b;">0</div>
+              <div style="font-size:11px;color:#6366f1;margin-top:5px;font-weight:600;">Bulan ini</div>
+            </div>
+            <div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                <div style="width:38px;height:38px;background:#f1f5f9;border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                  <svg style="width:18px;height:18px;" fill="none" stroke="#374151" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                </div>
+                <span id="statPendingBadge" style="font-size:11px;font-weight:600;color:#64748b;">0 tertunda</span>
+              </div>
+              <div style="font-size:12px;color:#64748b;margin-bottom:4px;">Verifikasi tertunda</div>
+              <div id="statVerifikasi" style="font-size:26px;font-weight:800;color:#1e293b;">0</div>
+              <div style="font-size:11px;color:#ef4444;margin-top:5px;font-weight:600;">Perlu perhatian</div>
+            </div>
+            <div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                <div style="width:38px;height:38px;background:#f1f5f9;border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                  <svg style="width:18px;height:18px;" fill="none" stroke="#374151" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                </div>
+                <span style="font-size:11px;font-weight:600;color:#64748b;">+8.2%</span>
+              </div>
+              <div style="font-size:12px;color:#64748b;margin-bottom:4px;">Pendapatan penjualan</div>
+              <div id="statPendapatan" style="font-size:26px;font-weight:800;color:#1e293b;">Rp 0</div>
+              <div style="font-size:11px;color:#10b981;margin-top:5px;font-weight:600;">Bulan ini</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:3fr 2fr;gap:16px;margin-bottom:22px;">
+            <div class="card">
+              <h3 style="font-size:14px;font-weight:700;color:#1e293b;margin:0 0 14px;">Tren Pendapatan Penjualan</h3>
+              <canvas id="chartPendapatan" height="150"></canvas>
+            </div>
+            <div class="card">
+              <h3 style="font-size:14px;font-weight:700;color:#1e293b;margin:0 0 14px;">Pendapatan Bulanan</h3>
+              <canvas id="chartStatus" height="170"></canvas>
+            </div>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div style="padding:16px 20px;border-bottom:1px solid #f1f5f9;">
+              <h3 style="font-size:14px;font-weight:700;color:#1e293b;margin:0;">Pesanan Terbaru</h3>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Pelanggan</th>
+                  <th>Total Harga</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="tbDashboard"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ===== DAFTAR PESANAN ===== -->
+        <div id="pg-kelola-pesanan" class="page">
+          <div class="page-header">
+            <h2>Daftar Pesanan</h2>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div style="padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;border-bottom:1px solid #f1f5f9;">
+              <div style="position:relative;">
+                <input type="text" id="searchPesanan" placeholder="Search by Order ID or Customer..." class="input" style="width:280px;padding:8px 14px 8px 36px;" oninput="loadPesananAdmin(this.value, document.getElementById('filterStatusPesanan').value)">
+                <button
+onclick="startVoiceSearch('searchPesanan')"
+  style="position:absolute;right:10px;top:50%;transform:translateY(-50%);border:none;background:transparent;cursor:pointer;font-size:16px;color:#64748b;"
+  title="Voice Search"
+>
+  🎙️
+</button>
+                <svg style="position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;height:14px;" fill="none" stroke="#94a3b8" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <select id="filterStatusPesanan" class="input" style="width:150px;padding:8px 12px;" onchange="loadPesananAdmin(document.getElementById('searchPesanan').value, this.value)">
+                  <option value="">Semua Status</option>
+                  <option value="pending">Pending</option>
+                  <option value="diproses">Diproses</option>
+                  <option value="selesai">Selesai</option>
+                  <option value="verifikasi">Verifikasi</option>
+                </select>
+                <span id="counterPesanan" style="font-size:12px;color:#64748b;white-space:nowrap;">0 Pesanan</span>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Nama Pelanggan</th>
+                  <th>Total Harga</th>
+                  <th>Total DP</th>
+                  <th>Tanggal Pemesanan</th>
+                  <th>Status</th>
+                  <th>Tindakan</th>
+                </tr>
+              </thead>
+              <tbody id="tbKelolaPesanan"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- DAFTAR PELANGGAN -->
+<div id="pg-kelola-pelanggan" class="page">
+  <div class="page-header">
+    <h2>Daftar Pelanggan</h2>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden;">
+
+    <!-- SEARCH & COUNTER -->
+    <div style="padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;border-bottom:1px solid #f1f5f9;">
+      <div style="position:relative;">
+        <input
+          type="text"
+          id="searchPelanggan"
+          placeholder="Search by name or email..."
+          class="input"
+          style="width:280px;padding:9px 14px 9px 38px;"
+          oninput="loadPelanggan(this.value)"
+        >
+        <button
+  onclick="startVoiceSearch('searchPesanan')"
+  style="position:absolute;right:10px;top:50%;transform:translateY(-50%);border:none;background:transparent;cursor:pointer;font-size:16px;color:#64748b;"
+  title="Voice Search"
+>
+  🎙️
+</button>
+        <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;" fill="none" stroke="#94a3b8" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+      </div>
+      <span id="counterPelanggan" style="font-size:13px;color:#64748b;font-weight:500;">0 Pesanan</span>
+    </div>
+
+    <!-- TABEL -->
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr style="border-bottom:2px solid #f1f5f9;">
+            <th style="padding:12px 20px;text-align:left;font-size:13px;font-weight:700;color:#1e293b;white-space:nowrap;">Order ID</th>
+            <th style="padding:12px 20px;text-align:left;font-size:13px;font-weight:700;color:#1e293b;white-space:nowrap;">Informasi Kontak</th>
+            <th style="padding:12px 20px;text-align:left;font-size:13px;font-weight:700;color:#1e293b;white-space:nowrap;">Total Barang</th>
+            <th style="padding:12px 20px;text-align:left;font-size:13px;font-weight:700;color:#1e293b;white-space:nowrap;">Total Belanja</th>
+            <th style="padding:12px 20px;text-align:left;font-size:13px;font-weight:700;color:#1e293b;white-space:nowrap;">Tanggal Login</th>
+            <th style="padding:12px 20px;text-align:left;font-size:13px;font-weight:700;color:#1e293b;white-space:nowrap;">Status</th>
+            <th style="padding:12px 20px;text-align:left;font-size:13px;font-weight:700;color:#1e293b;white-space:nowrap;">Tindakan</th>
+          </tr>
+        </thead>
+        <tbody id="tbPelanggan"></tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+        <!-- LAPORAN KEUANGAN -->
+<div id="pg-laporan" class="page">
+  <div class="page-header">
+    <h2>Laporan Keuangan</h2>
+  </div>
+
+  <!-- STAT CARDS -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
+
+    <!-- Total Pendapatan YTD -->
+    <div class="card">
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div style="width:38px;height:38px;background:#f1f5f9;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg style="width:18px;height:18px;" fill="none" stroke="#374151" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+        </div>
+        <div>
+          <div style="font-size:12px;color:#64748b;margin-bottom:4px;font-weight:500;">Total Pendapatan (YTD)</div>
+          <div id="laporanYTD" style="font-size:22px;font-weight:800;color:#1e293b;line-height:1.2;">Rp 0</div>
+          <div style="font-size:11px;color:#64748b;margin-top:4px;">Awal Tahun Hingga Saat Ini</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Saldo Nunggak -->
+    <div class="card">
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div style="width:38px;height:38px;background:#fef3c7;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg style="width:18px;height:18px;" fill="none" stroke="#d97706" stroke-width="2" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </div>
+        <div>
+          <div style="font-size:12px;color:#64748b;margin-bottom:4px;font-weight:500;">Saldo Nunggak</div>
+          <div id="laporanNunggak" style="font-size:22px;font-weight:800;color:#1e293b;line-height:1.2;">Rp 0</div>
+          <div id="laporanNunggakInfo" style="font-size:11px;color:#64748b;margin-top:4px;">0 Pesanan belum dibayar</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generate Laporan -->
+    <div class="card">
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div style="width:38px;height:38px;background:#f0fdf4;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg style="width:18px;height:18px;" fill="none" stroke="#16a34a" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </div>
+        <div>
+          <div style="font-size:12px;color:#64748b;margin-bottom:4px;font-weight:500;">Generate Laporan</div>
+          <div id="laporanGenerate" style="font-size:22px;font-weight:800;color:#1e293b;line-height:1.2;">0</div>
+          <div style="font-size:11px;color:#64748b;margin-top:4px;">Bulan ini</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BUAT LAPORAN BARU -->
+  <div class="card" style="margin-bottom:20px;">
+    <div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #f1f5f9;">
+      Buat Laporan Baru
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+
+      <!-- Tipe Laporan -->
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:5px;">Tipe Laporan</label>
+        <select id="tipeLaporan" class="input" style="padding:8px 12px;">
+          <option value="ringkasan">Ringkasan Penjualan</option>
+          <option value="detail">Detail Transaksi</option>
+          <option value="pelanggan">Per Pelanggan</option>
+          <option value="bulanan">Bulanan</option>
+        </select>
+      </div>
+
+      <!-- Waktu Mulai -->
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:5px;">Waktu Mulai</label>
+        <div style="position:relative;">
+          <input type="date" id="tglMulai" class="input" style="padding:8px 36px 8px 12px;">
+          <svg style="position:absolute;right:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;pointer-events:none;" fill="none" stroke="#94a3b8" stroke-width="2" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Waktu Selesai -->
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:5px;">Waktu Selesai</label>
+        <div style="position:relative;">
+          <input type="date" id="tglSelesai" class="input" style="padding:8px 36px 8px 12px;">
+          <svg style="position:absolute;right:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;pointer-events:none;" fill="none" stroke="#94a3b8" stroke-width="2" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Tombol Buat Laporan -->
+    <button onclick="buatLaporan()" class="btn btn-dark" style="padding:9px 24px;font-size:13px;">
+      Buat Laporan
+    </button>
+  </div>
+
+  <!-- DAFTAR LAPORAN -->
+  <div class="card" style="padding:0;overflow:hidden;">
+    <div style="padding:14px 20px;border-bottom:1px solid #f1f5f9;">
+      <h3 style="font-size:14px;font-weight:700;color:#1e293b;margin:0;">Daftar Laporan</h3>
+    </div>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr style="border-bottom:1px solid #f1f5f9;">
+            <th style="padding:12px 20px;text-align:left;font-size:13px;font-weight:700;color:#1e293b;">Nama Laporan</th>
+            <th style="padding:12px 20px;text-align:left;font-size:13px;font-weight:700;color:#1e293b;">Waktu</th>
+            <th style="padding:12px 20px;text-align:left;font-size:13px;font-weight:700;color:#1e293b;">Tipe</th>
+            <th style="padding:12px 20px;text-align:left;font-size:13px;font-weight:700;color:#1e293b;">Total Pendapatan</th>
+            <th style="padding:12px 20px;text-align:left;font-size:13px;font-weight:700;color:#1e293b;">Tanggal Buat</th>
+            <th style="padding:12px 20px;text-align:left;font-size:13px;font-weight:700;color:#1e293b;">Tindakan</th>
+          </tr>
+        </thead>
+        <tbody id="tbLaporan"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+       <!-- KOORDINASI HARGA -->
+<div id="pg-koordinasi" class="page">
+  <div class="page-header">
+    <h2>Koordinasi Harga</h2>
+  </div>
+
+  <!-- INPUT HARGA -->
+  <div class="card" style="padding:0;overflow:hidden;">
+    
+    <!-- JUDUL CARD -->
+    <div style="padding:14px 20px;border-bottom:1px solid #f1f5f9;">
+      <h3 style="font-size:14px;font-weight:700;color:#1e293b;margin:0;">Input Harga</h3>
+    </div>
+
+    <div style="padding:20px;">
+
+      <!-- BARIS 1: Order ID & Nama Pelanggan -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:5px;">Order ID</label>
+          <div style="position:relative;">
+            <input
+              type="text"
+              id="koordOrderId"
+              class="input"
+              placeholder="ORD-2u26-u421"
+              oninput="cariPesananKoord(this.value)"
+            >
+          </div>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:5px;">Nama Pelanggan</label>
+          <input
+            type="text"
+            id="koordNamaPelanggan"
+            class="input"
+            placeholder="Masukkan nama pelanggan"
+            readonly
+            style="background:#f8fafc;"
+          >
+        </div>
+      </div>
+
+      <!-- BARIS 2: Harga yang Disepakati & Total DP -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:5px;">Harga yang disepakati</label>
+          <div style="position:relative;display:flex;align-items:center;">
+            <span style="position:absolute;left:12px;font-size:13px;font-weight:600;color:#64748b;">Rp</span>
+            <input
+              type="number"
+              id="koordHarga"
+              class="input"
+              placeholder="0"
+              style="padding-left:36px;"
+              oninput="hitungKoordinasi()"
+            >
+          </div>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:5px;">Total DP</label>
+          <div style="position:relative;display:flex;align-items:center;">
+            <span style="position:absolute;left:12px;font-size:13px;font-weight:600;color:#64748b;">Rp</span>
+            <input
+              type="number"
+              id="koordDP"
+              class="input"
+              placeholder="0"
+              style="padding-left:36px;"
+              oninput="hitungKoordinasi()"
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- BARIS 3: Tanggal Jatuh Tempo & Sisa Pembayaran -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:5px;">Tanggal Jatuh Tempo</label>
+          <div style="position:relative;">
+            <input
+              type="date"
+              id="koordJatuhTempo"
+              class="input"
+              style="padding-left:12px;"
+            >
+          </div>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:5px;">Sisa Pembayaran</label>
+          <div style="position:relative;display:flex;align-items:center;">
+            <span style="position:absolute;left:12px;font-size:13px;font-weight:600;color:#64748b;">Rp</span>
+            <input
+              type="text"
+              id="koordSisa"
+              class="input"
+              placeholder="0"
+              readonly
+              style="padding-left:36px;background:#f8fafc;"
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- BARIS 4: Catatan Tambahan -->
+      <div style="margin-bottom:20px;">
+        <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:5px;">Catatan Tambahan</label>
+        <textarea
+          id="koordCatatan"
+          class="input"
+          rows="4"
+          placeholder="Tambahkan Catatan.."
+          style="resize:vertical;"
+        ></textarea>
+      </div>
+
+      <!-- RINGKASAN PEMBAYARAN -->
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;margin-bottom:20px;">
+        <div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:12px;">Ringkasan Pembayaran</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+
+          <!-- Harga Total -->
+          <div>
+            <div style="font-size:12px;color:#64748b;margin-bottom:4px;font-weight:500;">Harga Total</div>
+            <div id="ringkasanTotal" style="font-size:16px;font-weight:800;color:#1e293b;">Rp 0</div>
+          </div>
+
+          <!-- Uang Muka -->
+          <div>
+            <div style="font-size:12px;color:#64748b;margin-bottom:4px;font-weight:500;">Uang Muka</div>
+            <div>
+              <div id="ringkasanDP" style="font-size:16px;font-weight:800;color:#1e293b;">Rp 0</div>
+              <div id="ringkasanDPPersen" style="font-size:11px;color:#64748b;margin-top:2px;">(0%)</div>
+            </div>
+          </div>
+
+          <!-- Sisa Tagihan -->
+          <div>
+            <div style="font-size:12px;color:#64748b;margin-bottom:4px;font-weight:500;">Sisa Tagihan</div>
+            <div id="ringkasanSisa" style="font-size:16px;font-weight:800;color:#ef4444;">Rp 0</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TOMBOL HAPUS & SIMPAN -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+
+        <!-- Hapus Harga -->
+        <button
+          onclick="hapusKoordinasi()"
+          style="background:white;border:2px solid #1e293b;color:#1e293b;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;"
+          onmouseover="this.style.background='#f1f5f9'"
+          onmouseout="this.style.background='white'"
+        >
+          Hapus Harga
+        </button>
+
+        <!-- Simpan Harga -->
+        <button
+          onclick="simpanKoordinasi()"
+          style="background:#1e293b;color:white;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;"
+          onmouseover="this.style.background='#0f172a'"
+          onmouseout="this.style.background='#1e293b'"
+        >
+          <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+            <polyline points="7 3 7 8 15 8"/>
+          </svg>
+          Simpan Harga
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+        <!-- ===== MANAJEMEN USER ===== -->
+<div id="pg-manajemen-user" class="page">
+  <div class="page-header">
+    <h2>Manajemen User</h2>
+  </div>
+
+  <!-- TABLE CARD -->
+  <div class="card" style="
+    padding:0;
+    overflow:hidden;
+    background:white;
+    border-radius:22px;
+    border:1px solid #eef2f7;
+    box-shadow:0 1px 2px rgba(0,0,0,0.03);">
+
+    <!-- FILTER BAR -->
+    <div style="padding:18px 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f1f5f9;background:white;">
+
+  <div style="display:flex;align-items:center;gap:10px;">
+
+    <div style="position:relative;width:340px;">
+      <input
+        type="text"
+        id="searchUser"
+        placeholder="Search by name or email..."
+        class="input"
+        style="width:100%;height:44px;border:1px solid #e2e8f0;border-radius:14px;background:white;padding:0 46px 0 42px;font-size:13px;"
+        oninput="loadManajemenUser(this.value, document.getElementById('filterRole').value)"
+      >
+
+      <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#94a3b8;pointer-events:none;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+
+      <button onclick="startVoiceSearch('searchUser')" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);border:none;background:transparent;cursor:pointer;font-size:15px;color:#64748b;padding:0;">
+        🎙️
+      </button>
+    </div>
+
+    <select
+      id="filterRole"
+      class="input"
+      style="width:170px;height:44px;border:1px solid #e2e8f0;border-radius:14px;background:white;padding:0 14px;font-size:13px;"
+      onchange="loadManajemenUser(document.getElementById('searchUser').value, this.value)"
+    >
+      <option value="">Peran</option>
+      <option value="admin">Admin</option>
+      <option value="pelanggan">Pelanggan</option>
+    </select>
+
+  </div>
+
+  <button
+    onclick="openModal('modalUser')"
+    style="height:44px;background:#1e293b;color:white;border:none;border-radius:14px;padding:0 18px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;">
+    <span style="font-size:18px;">+</span>
+    <span>Tambahkan Pengguna</span>
+  </button>
+
+</div>
+    
+
+    <!-- TABLE -->
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;background:white;">
+        <thead style="background:#ffffff;">
+          <tr style="transition: 0.2;">
+            <th style="padding:12px 12px;text-align:left;font-size:12px;font-weight:700;color:#000;border-bottom:f1f5f9;background:white;">Pengguna</th>
+            <th style="padding:12px 12px;text-align:left;font-size:12px;font-weight:700;color:#000;border-bottom:f1f5f9;background:white;">Email</th>
+            <th style="padding:12px 12px;text-align:left;font-size:12px;font-weight:700;color:#000;border-bottom:f1f5f9;background:white;">Peran</th>
+            <th style="padding:12px 12px;text-align:left;font-size:12px;font-weight:700;color:#000;border-bottom:f1f5f9;background:white;">Status</th>
+            <th style="padding:12px 12px;text-align:left;font-size:12px;font-weight:700;color:#000;border-bottom:f1f5f9;background:white;">Terakhir<br>Login</th>
+            <th style="padding:12px 12px;text-align:left;font-size:12px;font-weight:700;color:#000;border-bottom:f1f5f9;background:white;">Tanggal<br>Pembuatan</th>
+            <th style="padding:12px 12px;text-align:left;font-size:12px;font-weight:700;color:#000;border-bottom:f1f5f9;background:white;">Tindakan</th>
+          </tr>
+        </thead>
+        <tbody id="tbUser"></tbody>
+      </table>
+    </div>
+
+    <!-- FOOTER TABLE -->
+    <div
+      id="userTableFooter"
+      style="padding:10px 12px;border-top:2px solid #1e293b;font-size:12px;color:#000;"
+    >
+      Menunjukkan 0 dari 0 Pengguna
+    </div>
+  </div>
+  <!-- SUMMARY CARDS -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:18px;" id="userStats">
+    <!-- diisi dari app.js -->
+  </div>
+</div>
+</div>
+
+        <!-- ===== PENGATURAN ===== -->
+<div id="pg-pengaturan" class="page">
+  
+  <div style="display:flex;flex-direction:column;gap:24px;width:100%; padding:0 28px 28px 28px;margin-top: -16px ;">
+    <div class="page-header">
+      <h2>Pengaturan</h2>
+    </div>
+              
+              <!-- NOTIFIKASI -->
+              <div class="card" style="width:100%;min-height:220px;margin-top:-16px;padding:0;overflow:hidden;border-radius:20px;background:white;border:1px solid #eef2f7;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+                <div style="
+    padding:18px 22px;
+    border-bottom:1px solid #f1f5f9;
+    background:white;
+    display:flex;
+    align-items:center;
+    gap:10px;
+">
+
+    <span style="font-size:20px;">🔔</span>
+
+    <h3 style="
+        font-size:15px;
+        font-weight:800;
+        color:#1e293b;
+        margin:0;
+    ">
+        Notifikasi
+    </h3>
+
+</div>
+                
+                <div style="padding:22px;display:flex;flex-direction:column;gap:16px;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;">
+                    <div>
+                      <div style="font-size:14px;font-weight:700;color:#1e293b;">Notifikasi Email</div>
+                      <div style="font-size:13px;color:#64748b;">Menerima email untuk pesanan baru</div>
+          </div>
+          <label style="position:relative;display:inline-block;width:48px;height:26px;">
+            <input type="checkbox" checked style="display:none;">
+            <span style="position:absolute;cursor:pointer;inset:0;background:#22c55e;border-radius:999px;"></span>
+            <span style="position:absolute;width:20px;height:20px;right:3px;top:3px;background:white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+          </label>
+        </div>
+        
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;">
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#1e293b;">Verifikasi Pembayaran</div>
+            <div style="font-size:13px;color:#64748b;">Menerima email jika ada pembayaran yang memerlukan verifikasi</div>
+          </div>
+          <label style="position:relative;display:inline-block;width:48px;height:26px;">
+            <input type="checkbox" checked style="display:none;">
+            <span style="position:absolute;cursor:pointer;inset:0;background:#22c55e;border-radius:999px;"></span>
+            <span style="position:absolute;width:20px;height:20px;right:3px;top:3px;background:white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- KEAMANAN -->
+    <div class="card" style="width:100%;min-height:220px;padding:0;overflow:hidden;border-radius:20px;background:white;border:1px solid #eef2f7;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+      <div style="padding:18px 22px;border-bottom:1px solid #f1f5f9;background:white;display:flex;align-items:center;gap:10px;">
+  <span style="font-size:20px;">🔒</span>
+  <h3 style="font-size:15px;font-weight:800;color:#1e293b;margin:0;">Keamanan</h3>
+</div>
+      
+      <div style="padding:22px;display:grid;grid-template-columns:1fr;gap:14px;max-width:420px;">
+        <div>
+          <label style="font-size:13px;font-weight:700;color:#334155;display:block;margin-bottom:6px;">Kata Sandi Sekarang</label>
+          <input type="password" class="input" placeholder="Masukkan kata sandi">
+        </div>
+        
+        <div>
+          <label style="font-size:13px;font-weight:700;color:#334155;display:block;margin-bottom:6px;">Password Baru</label>
+          <input type="password" class="input" placeholder="Masukkan kata sandi baru">
+        </div>
+        
+        <div>
+          <label style="font-size:13px;font-weight:700;color:#334155;display:block;margin-bottom:6px;">Konfirmasi</label>
+          <input type="password" class="input" placeholder="Konfirmasi kata sandi baru">
+        </div>
+        
+        <button class="btn btn-dark" style="width:max-content;margin-top:4px;">Simpan Password</button>
+      </div>
+    </div>
+    
+    <!-- TAMPILAN -->
+    <div class="card" style="width:100%;min-height:220px;padding:0;overflow:hidden;border-radius:20px;background:white;border:1px solid #eef2f7;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+      <div style="padding:18px 22px;border-bottom:1px solid #f1f5f9;background:white;display:flex;align-items:center;gap:10px;">
+  <span style="font-size:20px;">🎨</span>
+  <h3 style="font-size:15px;font-weight:800;color:#1e293b;margin:0;">Tampilan</h3>
+</div>
+      
+      <div style="padding:22px;display:grid;grid-template-columns:1fr;gap:14px;">
+        <div>
+          <label style="font-size:13px;font-weight:700;color:#334155;display:block;margin-bottom:6px;">Tema</label>
+          <select class="input">
+            <option>Mode siang</option>
+            <option>Mode malam</option>
+          </select>
+        </div>
+        
+        <div>
+          <label style="font-size:13px;font-weight:700;color:#334155;display:block;margin-bottom:6px;">Bahasa</label>
+          <select class="input">
+            <option>Indonesia</option>
+            <option>Inggris</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    <!-- SISTEM INFORMASI -->
+    <div class="card" style="width:100%;min-height:160px;padding:0;overflow:hidden;border-radius:20px;background:white;border:1px solid #eef2f7;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+      <div style="padding:18px 22px;border-bottom:1px solid #f1f5f9;background:white;display:flex;align-items:center;gap:10px;">
+  <span style="font-size:20px;">🗄️</span>
+  <h3 style="font-size:15px;font-weight:800;color:#1e293b;margin:0;">Sistem Informasi</h3>
+</div>
+      
+      <div style="padding:22px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:#334155;">
+          <span>Versi</span>
+          <strong>1.0.0</strong>
+        </div>
+        
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:#334155;">
+          <span>Status Basis Data</span>
+          <strong style="color:#16a34a;">Terhubung</strong>
+        </div>
+        
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:#334155;">
+          <span>Pencadangan Terakhir</span>
+          <strong>2026-04-20 02.00</strong>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<!-- ===== BERANDA PELANGGAN ===== -->
+<div id="pg-beranda" class="page">
+
+  <div style="padding:0 28px 28px 28px;">
+
+    <div style="margin-bottom:28px;">
+      <div style="
+          font-size:18px;
+          font-weight:600;
+          color:#0f172a;
+          margin-bottom:4px;">
+          Selamat Datang di
+      </div>
+
+      <div style="
+          font-size:40px;
+          font-weight:900;
+          color:#0f172a;
+          line-height:1.1;
+      ">
+          Order Barang
+      </div>
+    </div>
+
+  <!-- STAT CARD -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:28px;">
+    <div class="card" style="min-height:130px;">
+      <div style="width:46px;height:46px;background:#f1f5f9;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+        📦
+      </div>
+      <div style="font-size:14px;font-weight:700;color:#1e293b;">Total Pesanan Aktif</div>
+      <div id="pelTotalAktif" style="font-size:24px;font-weight:900;color:#0f172a;margin-top:8px;">0</div>
+    </div>
+
+    <div class="card" style="min-height:130px;">
+      <div style="width:46px;height:46px;background:#f1f5f9;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+        🕒
+      </div>
+      <div style="font-size:14px;font-weight:700;color:#1e293b;">Pembayaran Tertunda</div>
+      <div id="pelBayarTertunda" style="font-size:24px;font-weight:900;color:#0f172a;margin-top:8px;">0</div>
+    </div>
+    
+    <div class="card" style="min-height:130px;">
+      <div style="width:46px;height:46px;background:#f1f5f9;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+        ✅
+      </div>
+      <div style="font-size:14px;font-weight:700;color:#1e293b;">Selesai</div>
+      <div id="pelSelesai" style="font-size:24px;font-weight:900;color:#0f172a;margin-top:8px;">0</div>
+    </div>
+  </div>
+  
+  <!-- LIST PESANAN AKTIF -->
+  <div id="listBerandaPelanggan" style="display:flex;flex-direction:column;gap:20px;"></div>
+   </div>
+</div>
+
+<!-- ===== PESANAN SAYA ===== -->
+        <div id="pg-pesanan-saya" class="page">
+  <div style="padding:0 28px 28px 28px;">
+
+    <div style="margin-top:-14px;margin-bottom:28px;">
+
+  <div style="
+      font-size:40px;
+      font-weight:900;
+      color:#0f172a;
+      line-height:1.1;
+  ">
+      Pesanan Saya
+  </div>
+
+</div>
+
+    <div class="card" style="padding:0;overflow:hidden;border-radius:20px;background:white;border:1px solid #eef2f7;">
+      
+      <div style="padding:18px 22px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:20px;font-weight:800;">+</span>
+        <h3 style="font-size:18px;font-weight:800;color:#0f172a;margin:0;">Permintaan Pesanan Baru</h3>
+      </div>
+
+      <div style="padding:24px;">
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:20px;">
+          <div>
+            <label style="font-size:13px;font-weight:700;color:#334155;display:block;margin-bottom:8px;">Nama barang</label>
+            <input id="namaBarangPesanan" type="text" class="input" placeholder="Masukkan nama barang">
+          </div>
+
+          <div>
+            <label style="font-size:13px;font-weight:700;color:#334155;display:block;margin-bottom:8px;">Jumlah</label>
+            <input id="jumlahBarangPesanan" type="number" class="input" min="1" value="1">
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px;max-width:460px;">
+          <label style="font-size:13px;font-weight:700;color:#334155;display:block;margin-bottom:8px;">Tipe</label>
+          <select id="tipeBarangPesanan" class="input">
+            <option value="">Pilih tipe barang</option>
+            <option value="Elektronik">Elektronik</option>
+            <option value="Peralatan Kantor">Peralatan Kantor</option>
+            <option value="Aksesoris Komputer">Aksesoris Komputer</option>
+            <option value="Rumah Tangga">Rumah Tangga</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <label style="font-size:13px;font-weight:700;color:#334155;display:block;margin-bottom:8px;">Deskripsi</label>
+          <textarea id="deskripsiPesanan" class="input" rows="4" placeholder="Tambahkan komentar untuk pesanan anda..."></textarea>
+        </div>
+
+        <div style="margin-bottom:24px;">
+          <label for="fotoPembayaran" style="
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            min-height:160px;
+            border:2px dashed #cbd5e1;
+            border-radius:16px;
+            background:#f8fafc;
+            cursor:pointer;
+            text-align:center;
+          ">
+            <div style="font-size:34px;margin-bottom:10px;">⬆️</div>
+            <div style="font-size:16px;font-weight:800;color:#0f172a;">Klik untuk mengupload foto pembayaran</div>
+            <div style="font-size:12px;color:#64748b;margin-top:6px;">JPG or PNG (Max 5MB)</div>
+          </label>
+          <input id="fotoPembayaran" type="file" accept="image/png,image/jpeg" style="display:none;">
+        </div>
+
+        <div style="display:grid;grid-template-columns:160px 1fr;gap:20px;">
+          <button type="button" onclick="resetFormPesanan()" class="btn btn-gray" style="height:44px;border-radius:10px;">Hapus</button>
+          <button type="button" onclick="kirimPermintaanPesanan()" class="btn btn-dark" style="height:44px;border-radius:10px;">Masukkan Permintaan Pesanan</button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+        <!-- ===== RIWAYAT ===== -->
+        <div id="pg-riwayat" class="page">
+  <div style="padding:0 28px 28px 28px;">
+
+    <div style="margin-top:-14px;margin-bottom:28px;">
+      <div style="font-size:40px;font-weight:900;color:#0f172a;line-height:1.1;">
+        Riwayat Transaksi
+      </div>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden;border-radius:20px;background:white;border:1px solid #eef2f7;">
+
+      <div style="padding:22px;border-bottom:1px solid #f1f5f9;display:grid;grid-template-columns:1fr 1fr 1fr;align-items:center;">
+
+  <!-- kiri -->
+  <div style="display:flex;justify-content:flex-start;">
+    <div>
+      <div style="font-size:13px;color:#64748b;font-weight:600;">Total Transaksi</div>
+      <div id="riwayatTotalTransaksi" style="font-size:24px;font-weight:900;color:#0f172a;margin-top:4px;">0</div>
+    </div>
+  </div>
+
+  <!-- tengah -->
+  <div style="display:flex;justify-content:center;text-align:center;">
+    <div>
+      <div style="font-size:13px;color:#64748b;font-weight:600;">Total Transaksi</div>
+      <div id="riwayatTotalHarga" style="font-size:24px;font-weight:900;color:#0f172a;margin-top:4px;">Rp 0</div>
+    </div>
+  </div>
+
+  <!-- kanan -->
+  <div style="display:flex;justify-content:flex-end;">
+    <select id="filterRiwayatStatus"
+      class="input"
+      style="width:180px;height:42px;border-radius:12px;"
+      onchange="loadRiwayat(this.value)">
+      <option value="">Status</option>
+      <option value="pending">Pending</option>
+      <option value="verifikasi">Verifikasi</option>
+      <option value="diproses">In Progress</option>
+      <option value="selesai">Selesai</option>
+    </select>
+  </div>
+
+</div>
+
+      <div style="overflow-x:auto;">
+        <table style="width:100%;table-layout:fixed;border-collapse:collapse;background:white;">
+          <thead>
+            <tr>
+              <th style="text-align:left;">Order ID</th>
+              <th style="text-align:left;">Nama Barang</th>
+              <th style="text-align:left;">Tanggal</th>
+              <th style="text-align:left;">Tagihan</th>
+              <th style="text-align:left;">Status</th>
+              <th style="text-align:left;">Tindakan</th>
+            </tr>
+          </thead>
+          <tbody id="tbRiwayatPelanggan"></tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+        <!-- ===== CHAT ===== -->
+        <div id="pg-chat" class="page">
+  <div style="padding:0 28px 28px 28px;">
+
+    <div style="margin-top:-14px;margin-bottom:28px;">
+      <div style="font-size:40px;font-weight:900;color:#0f172a;line-height:1.1;">
+        Chat dengan Admin
+      </div>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden;border-radius:20px;background:white;border:1px solid #eef2f7;max-width:1000px;">
+
+      <div style="padding:18px 22px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:12px;">
+        <div style="width:42px;height:42px;border-radius:12px;background:#1e293b;color:white;display:flex;align-items:center;justify-content:center;font-weight:800;">
+          A
+        </div>
+        <div>
+          <div style="font-size:15px;font-weight:800;color:#0f172a;">Admin Support</div>
+          <div style="font-size:13px;color:#64748b;">Biasanya membalas dalam beberapa menit</div>
+        </div>
+      </div>
+
+      <div id="chatBoxPelanggan" style="height:520px;overflow-y:auto;padding:24px;background:#ffffff;display:flex;flex-direction:column;gap:18px;">
+
+        <div style="display:flex;justify-content:flex-start;">
+          <div style="max-width:58%;background:white;border:1px solid #e2e8f0;border-radius:18px 18px 18px 4px;padding:14px 16px;font-size:14px;color:#0f172a;">
+            Halo! Apa yang bisa saya bantu hari ini?
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;">
+          <div style="max-width:58%;background:#1e293b;color:white;border-radius:18px 18px 4px 18px;padding:14px 16px;font-size:14px;">
+            Hi, Saya mau membahas soal harga untuk pesanan ORD-2026-0421
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-start;">
+          <div style="max-width:58%;background:white;border:1px solid #e2e8f0;border-radius:18px 18px 18px 4px;padding:14px 16px;font-size:14px;color:#0f172a;">
+            Tentu! Saya akan mengecek detail untuk pesanan tersebut
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-start;">
+          <div style="max-width:58%;background:white;border:1px solid #e2e8f0;border-radius:18px 18px 18px 4px;padding:14px 16px;font-size:14px;color:#0f172a;">
+            Untuk Paket Peralatan Kantor, kami dapat menawarkan harga total Rp 125.000 dengan uang muka 40% (Rp 50.000). Sisa saldo akan jatuh tempo dalam 30 hari. Apakah ini cocok untuk Anda?
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;">
+          <div style="max-width:58%;background:#1e293b;color:white;border-radius:18px 18px 4px 18px;padding:14px 16px;font-size:14px;">
+            Itu terdengar masuk akal. Bisakah kita memperpanjang jangka waktu pembayaran menjadi 45 hari?
+          </div>
+        </div>
+
+      </div>
+
+      <div style="padding:16px 18px;border-top:1px solid #f1f5f9;display:flex;align-items:center;gap:12px;background:white;">
+        <input
+          id="inputChatPelanggan"
+          type="text"
+          class="input"
+          placeholder="Ketik Pesanmu..."
+          style="height:44px;border-radius:14px;flex:1;"
+          onkeydown="if(event.key==='Enter')kirimChatPelanggan()"
+        >
+
+        <button
+          onclick="kirimChatPelanggan()"
+          class="btn btn-dark"
+          style="height:44px;border-radius:14px;padding:0 22px;"
+        >
+          Kirim
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+        <!-- ===== PROFIL ===== -->
+        <div id="pg-profil" class="page">
+  <div style="padding:0 28px 28px 28px;">
+
+    <div style="margin-top:-14px;margin-bottom:28px;">
+      <div style="font-size:40px;font-weight:900;color:#0f172a;line-height:1.1;">
+        Pengaturan Profil
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;align-items:start;">
+
+      <div style="display:flex;flex-direction:column;gap:20px;">
+
+        <div class="card" style="padding:0;overflow:hidden;border-radius:18px;">
+          <div style="padding:16px 20px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:10px;">
+            <span>👤</span>
+            <h3 style="font-size:15px;font-weight:800;color:#0f172a;margin:0;">Informasi Pribadi</h3>
+          </div>
+
+          <div style="padding:20px;display:grid;grid-template-columns:1fr;gap:14px;">
+            <div>
+              <label style="font-size:13px;font-weight:700;color:#334155;display:block;margin-bottom:6px;">Nama Lengkap</label>
+              <input id="profilNama" class="input" value="John Doe">
+            </div>
+
+            <div>
+              <label style="font-size:13px;font-weight:700;color:#334155;display:block;margin-bottom:6px;">Email</label>
+              <input id="profilEmail" class="input" value="john.doe@example.com">
+            </div>
+
+            <div>
+              <label style="font-size:13px;font-weight:700;color:#334155;display:block;margin-bottom:6px;">No.Telephon</label>
+              <input id="profilTelepon" class="input" value="+1-555-0123">
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:0;overflow:hidden;border-radius:18px;">
+          <div style="padding:16px 20px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:10px;">
+            <span>📍</span>
+            <h3 style="font-size:15px;font-weight:800;color:#0f172a;margin:0;">Informasi Alamat</h3>
+          </div>
+
+          <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div style="grid-column:1 / 3;">
+              <label style="font-size:13px;font-weight:700;color:#334155;display:block;margin-bottom:6px;">Nama Jalan</label>
+              <input id="profilJalan" class="input" value="123 main Street">
+            </div>
+
+            <div>
+              <label style="font-size:13px;font-weight:700;color:#334155;display:block;margin-bottom:6px;">Kota</label>
+              <input id="profilKota" class="input" value="New York">
+            </div>
+
+            <div>
+              <label style="font-size:13px;font-weight:700;color:#334155;display:block;margin-bottom:6px;">Kode Pos</label>
+              <input id="profilKodePos" class="input" value="10001">
+            </div>
+
+            <div style="grid-column:1 / 3;">
+              <label style="font-size:13px;font-weight:700;color:#334155;display:block;margin-bottom:6px;">Negara</label>
+              <input id="profilNegara" class="input" value="United States">
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:0;overflow:hidden;border-radius:18px;">
+          <div style="padding:16px 20px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:10px;">
+            <span>🔒</span>
+            <h3 style="font-size:15px;font-weight:800;color:#0f172a;margin:0;">Ganti Kata Sandi</h3>
+          </div>
+
+          <div style="padding:20px;display:grid;grid-template-columns:1fr;gap:14px;max-width:420px;">
+            <div>
+              <label style="font-size:13px;font-weight:700;color:#334155;display:block;margin-bottom:6px;">Kata Sandi Sekarang</label>
+              <input id="profilPassLama" type="password" class="input" placeholder="Masukkan kata sandi">
+            </div>
+
+            <div>
+              <label style="font-size:13px;font-weight:700;color:#334155;display:block;margin-bottom:6px;">Kata Sandi Baru</label>
+              <input id="profilPassBaru" type="password" class="input" placeholder="Masukkan kata sandi baru">
+            </div>
+
+            <div>
+              <label style="font-size:13px;font-weight:700;color:#334155;display:block;margin-bottom:6px;">Konfirmasi</label>
+              <input id="profilPassKonfirmasi" type="password" class="input" placeholder="Konfirmasi kata sandi baru">
+            </div>
+
+            <button class="btn btn-dark" onclick="updatePasswordProfil()" style="width:max-content;">Perbarui Kata Sandi</button>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:20px;">
+          <button class="btn btn-gray" style="width:160px;height:44px;">Tidak</button>
+          <button class="btn btn-dark" onclick="simpanProfilPelanggan()" style="width:220px;height:44px;">Simpan Perubahan</button>
+        </div>
+
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:20px;">
+
+        <div class="card" style="text-align:center;border-radius:18px;">
+          <div style="width:80px;height:80px;border-radius:18px;background:#f1f5f9;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:34px;">
+            👤
+          </div>
+          <div id="profilCardNama" style="font-size:16px;font-weight:800;color:#0f172a;">John Doe</div>
+          <div style="font-size:13px;color:#64748b;margin:6px 0 16px;">Akun Pelanggan</div>
+          <button class="btn btn-outline-dark">Ganti Foto Profil</button>
+        </div>
+
+        <div class="card" style="border-radius:18px;">
+          <div style="font-size:15px;font-weight:800;color:#0f172a;margin-bottom:12px;">Status Akun</div>
+          <div style="font-size:13px;color:#334155;margin-bottom:12px;">Akun mu aktif dan terverifikasi</div>
+
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px;">
+            <span style="color:#64748b;">Anggota dari:</span>
+            <strong>Jan 2025</strong>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;font-size:13px;">
+            <span style="color:#64748b;">Total Pesanan:</span>
+            <strong id="profilTotalPesanan">14</strong>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+<!-- MODAL DETAIL -->
+<div class="modal-bg" id="modalDetail">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+      <h3 style="font-size:15px;font-weight:700;color:#1e293b;margin:0;">Detail Pesanan</h3>
+      <button onclick="closeModal('modalDetail')" style="background:#f1f5f9;border:none;border-radius:7px;padding:5px 10px;cursor:pointer;font-size:14px;">✕</button>
+    </div>
+    <div id="modalDetailContent"></div>
+  </div>
+</div>
+
+<!-- MODAL STATUS -->
+<div class="modal-bg" id="modalStatus">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+      <h3 style="font-size:15px;font-weight:700;color:#1e293b;margin:0;">Update Status Pesanan</h3>
+      <button onclick="closeModal('modalStatus')" style="background:#f1f5f9;border:none;border-radius:7px;padding:5px 10px;cursor:pointer;font-size:14px;">✕</button>
+    </div>
+    <div id="modalStatusContent"></div>
+  </div>
+</div>
+
+<!-- MODAL TAMBAH USER -->
+<div class="modal-bg" id="modalTambahUser">
+  <div class="modal-box" style="max-width:420px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+      <h3 style="font-size:15px;font-weight:700;color:#1e293b;margin:0;">Tambah Pengguna</h3>
+      <button onclick="closeModal('modalTambahUser')" style="background:#f1f5f9;border:none;border-radius:7px;padding:5px 10px;cursor:pointer;font-size:14px;">✕</button>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Nama</label>
+        <input type="text" id="newUserNama" class="input" placeholder="Nama pengguna">
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Email</label>
+        <input type="email" id="newUserEmail" class="input" placeholder="email@example.com">
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Password</label>
+        <input type="password" id="newUserPassword" class="input" placeholder="Minimal 6 karakter">
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Role</label>
+        <select id="newUserRole" class="input">
+          <option value="pelanggan">Pelanggan</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <button onclick="tambahUser()" class="btn btn-dark" style="width:100%;padding:11px;margin-top:8px;">
+        Simpan Pengguna
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

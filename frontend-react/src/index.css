@@ -1,0 +1,139 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #0f172a;
+  background: #f8fafc;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+#root {
+  min-height: 100vh;
+  width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+  color: #0f172a;
+}
+
+input,
+textarea,
+select {
+  background: white;
+}
+
+h1,
+h2,
+h3,
+p {
+  color: inherit;
+}
+
+.sidebar-link {
+  height: 58px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 18px;
+  text-decoration: none;
+  color: #334155;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.sidebar-link.active {
+  background: #073B63;
+  color: white;
+  box-shadow: 0 6px 14px rgba(7, 59, 99, 0.24);
+}
+
+.riwayat-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #073b63;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 10px 14px;
+  border-radius: 14px;
+  transition: all 0.2s ease;
+}
+
+.riwayat-action-btn:hover {
+  background: #ffffff;
+  border-color: #dbeafe;
+  box-shadow: 0 8px 20px rgba(7, 59, 99, 0.12);
+  transform: translateY(-2px);
+}
+
+.riwayat-action-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: #eaf3ff;
+  color: #073b63;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.riwayat-action-btn:hover .riwayat-action-icon {
+  background: #073b63;
+  color: white;
+}
+
+button {
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+input,
+select,
+textarea {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #0f83ed !important;
+  box-shadow: 0 0 0 4px rgba(15, 131, 237, 0.12);
+}
+
+.password-input::-ms-reveal,
+.password-input::-ms-clear {
+  display: none;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
