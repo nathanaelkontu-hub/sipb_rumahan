@@ -48,6 +48,7 @@ export default function DaftarPesanan() {
   const [modal, setModal] = useState(null);
   const [statusBaru, setStatusBaru] = useState("");
   const [catatanAdmin, setCatatanAdmin] = useState("");
+  const [statusBayarBaru, setStatusBayarBaru] = useState("");
 
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState(null);
@@ -85,16 +86,19 @@ export default function DaftarPesanan() {
       status: pesananItem.status, 
       catatan: pesananItem.catatan,
       bukti_bayar: pesananItem.bukti_bayar,
+      status_bayar: pesananItem.status_bayar,
       catatan_admin: pesananItem.catatan_admin 
     });
     setStatusBaru(pesananItem.status);
     setCatatanAdmin(pesananItem.catatan_admin || "");
+    setStatusBayarBaru(pesananItem.status_bayar || "pending");
   };
 
   const closeModal = () => {
     setModal(null);
     setStatusBaru("");
     setCatatanAdmin("");
+    setStatusBayarBaru("");
   };
 
   const updateStatus = async () => {
@@ -104,6 +108,7 @@ export default function DaftarPesanan() {
       const res = await API.put(`/admin/pesanan/${modal.id}/status`, {
         status: statusBaru,
         catatan_admin: catatanAdmin,
+        status_bayar: modal.bukti_bayar ? statusBayarBaru : undefined
       });
       if (res.data.success) {
         showToast("Status pesanan berhasil diubah!");
@@ -202,6 +207,27 @@ export default function DaftarPesanan() {
                 ) : (
                   <div style={{ fontSize: 13, color: "#64748b", fontStyle: "italic" }}>
                     Pelanggan belum mengunggah bukti pembayaran.
+                  </div>
+                )}
+                {modal.bukti_bayar && (
+                  <div style={{ marginTop: 10 }}>
+                    <label style={{ fontSize: 12, fontWeight: 600, color: "#374151", display: "block", marginBottom: 5 }}>
+                      Validasi Pembayaran
+                    </label>
+                    <select
+                      value={statusBayarBaru}
+                      onChange={e => setStatusBayarBaru(e.target.value)}
+                      style={{
+                        width: "100%", padding: "9px 14px",
+                        border: "1.5px solid #e2e8f0", borderRadius: 8,
+                        fontSize: 13, outline: "none", color: "#374151",
+                        background: statusBayarBaru === 'ditolak' ? '#fef2f2' : statusBayarBaru === 'diterima' ? '#f0fdf4' : 'white'
+                      }}
+                    >
+                      <option value="pending">⏳ Menunggu Pengecekan (Pending)</option>
+                      <option value="diterima">✅ Terima Pembayaran (Valid)</option>
+                      <option value="ditolak">❌ Tolak Pembayaran (Tidak Valid)</option>
+                    </select>
                   </div>
                 )}
               </div>

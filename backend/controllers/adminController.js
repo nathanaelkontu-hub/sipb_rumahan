@@ -143,7 +143,7 @@ exports.getDetailPesanan = async (req, res) => {
 exports.updateStatusPesanan = async (req, res) => {
     try {
         const { id } = req.params;
-        const { status, catatan_admin, total_harga, harga_koordinasi } = req.body;
+        const { status, catatan_admin, total_harga, harga_koordinasi, status_bayar } = req.body;
 
         let query = `UPDATE pesanan SET status = ?, catatan_admin = ?`;
         const params = [status, catatan_admin || null];
@@ -166,6 +166,26 @@ exports.updateStatusPesanan = async (req, res) => {
         params.push(id);
 
         await db.execute(query, params);
+
+        // Update status pembayaran jika admin memilihnya secara eksplisit dari dropdown
+        if (status_bayar) {
+            await db.execute(
+                `UPDATE pembayaran 
+                 SET status = ? 
+                 WHERE id_pembayaran = (
+                     SELECT max_id FROM (
+                         SELECT MAX(id_pembayaran) as max_id FROM pembayaran WHERE id_pesanan = ?
+                     ) AS tmp
+                 )`,
+                [status_bayar, id]
+            );
+        } else if (status === 'selesai') {
+            // Fallback: Jika pesanan selesai tapi admin tidak mengirim status_bayar, otomatis jadikan diterima
+            await db.execute(
+                `UPDATE pembayaran SET status = 'diterima' WHERE id_pesanan = ? AND status = 'pending'`,
+                [id]
+            );
+        }
 
         // Synchronize detail_pesanan pricing for consistency in reports
         if (total_harga !== undefined) {
@@ -308,13 +328,15 @@ exports.getLaporan = async (req, res) => {
                 dateParams
             );
         } else {
-            // ringkasan (default): data mentah, di-group per bulan di frontend
+            // ringkasan (default): rekap per barang
             [data] = await db.execute(
-                `SELECT p.*, pl.nama as nama_pelanggan
-                 FROM pesanan p
-                 JOIN pelanggan pl ON p.id_pelanggan = pl.id_pelanggan
+                `SELECT b.nama_barang, SUM(dp.jumlah) as total_qty, SUM(dp.subtotal) as total_pendapatan
+                 FROM detail_pesanan dp
+                 JOIN pesanan p ON dp.id_pesanan = p.id_pesanan
+                 JOIN barang b ON dp.id_barang = b.id_barang
                  WHERE ${dateFilterP}
-                 ORDER BY p.tanggal_pesan DESC`,
+                 GROUP BY b.id_barang, b.nama_barang
+                 ORDER BY total_pendapatan DESC`,
                 dateParams
             );
         }
@@ -381,8 +403,7 @@ exports.generateExcelLaporan = async (req, res) => {
                  ORDER BY total_belanja DESC`,
                 [tgl_mulai, tgl_selesai]
             );
-        } else {
-            // ringkasan & bulanan: group by month
+        } else if (tipe === 'bulanan') {
             [mainData] = await db.execute(
                 `SELECT YEAR(tanggal_pesan) as tahun, MONTH(tanggal_pesan) as bulan,
                         COUNT(*) as jumlah_pesanan,
@@ -391,6 +412,18 @@ exports.generateExcelLaporan = async (req, res) => {
                  WHERE status = 'selesai' AND DATE(tanggal_pesan) BETWEEN ? AND ?
                  GROUP BY YEAR(tanggal_pesan), MONTH(tanggal_pesan)
                  ORDER BY tahun ASC, bulan ASC`,
+                [tgl_mulai, tgl_selesai]
+            );
+        } else {
+            // ringkasan (default): group by barang
+            [mainData] = await db.execute(
+                `SELECT b.nama_barang, SUM(dp.jumlah) as total_qty, SUM(dp.subtotal) as total_pendapatan
+                 FROM detail_pesanan dp
+                 JOIN pesanan p ON dp.id_pesanan = p.id_pesanan
+                 JOIN barang b ON dp.id_barang = b.id_barang
+                 WHERE p.status = 'selesai' AND DATE(p.tanggal_pesan) BETWEEN ? AND ?
+                 GROUP BY b.id_barang, b.nama_barang
+                 ORDER BY total_pendapatan DESC`,
                 [tgl_mulai, tgl_selesai]
             );
         }
@@ -590,26 +623,25 @@ exports.generateExcelLaporan = async (req, res) => {
         } else {
             // ringkasan (default)
             const ws = workbook.addWorksheet('Ringkasan Penjualan');
-            addTitleBlock(ws, 'LAPORAN RINGKASAN PENJUALAN', 4);
-            ws.addRow(['Bulan', 'Tahun', 'Jumlah Pesanan', 'Total Pendapatan']);
-            styleHeaderRow(ws, 4, 4);
+            addTitleBlock(ws, 'LAPORAN RINGKASAN PENJUALAN', 3);
+            ws.addRow(['Nama Barang', 'Jumlah Terjual', 'Total Pendapatan']);
+            styleHeaderRow(ws, 4, 3);
 
             const startRow = 5;
             mainData.forEach((row, i) => {
                 ws.addRow([
-                    NAMA_BULAN[parseInt(row.bulan) - 1],
-                    parseInt(row.tahun),
-                    parseInt(row.jumlah_pesanan),
+                    row.nama_barang,
+                    parseInt(row.total_qty),
                     parseFloat(row.total_pendapatan)
                 ]);
                 const r = startRow + i;
                 ws.getRow(r).height = 20;
-                for (let c = 1; c <= 4; c++) {
+                for (let c = 1; c <= 3; c++) {
                     const cell = ws.getCell(r, c);
                     cell.font = textFont;
                     cell.border = borderStyle;
-                    if (c <= 2) { cell.alignment = { horizontal: 'left', vertical: 'middle' }; }
-                    else if (c === 3) { cell.numFmt = '#,##0'; cell.alignment = { horizontal: 'right', vertical: 'middle' }; }
+                    if (c === 1) { cell.alignment = { horizontal: 'left', vertical: 'middle' }; }
+                    else if (c === 2) { cell.numFmt = '#,##0'; cell.alignment = { horizontal: 'right', vertical: 'middle' }; }
                     else { cell.numFmt = currencyFmt; cell.alignment = { horizontal: 'right', vertical: 'middle' }; }
                 }
             });
@@ -617,13 +649,12 @@ exports.generateExcelLaporan = async (req, res) => {
             const endRow = startRow + mainData.length - 1;
             if (mainData.length > 0) {
                 ws.getRow(endRow + 1).height = 8;
-                addTotalRow(ws, endRow + 2, 4,
-                    { 3: { formula: `SUM(C${startRow}:C${endRow})` }, 4: { formula: `SUM(D${startRow}:D${endRow})` } },
-                    { 3: '#,##0', 4: currencyFmt }
+                addTotalRow(ws, endRow + 2, 3,
+                    { 2: { formula: `SUM(B${startRow}:B${endRow})` }, 3: { formula: `SUM(C${startRow}:C${endRow})` } },
+                    { 2: '#,##0', 3: currencyFmt }
                 );
             }
-            ws.getColumn(1).width = 16; ws.getColumn(2).width = 10;
-            ws.getColumn(3).width = 18; ws.getColumn(4).width = 22;
+            ws.getColumn(1).width = 25; ws.getColumn(2).width = 18; ws.getColumn(3).width = 25;
         }
 
         // ---- Sheet 2: Ringkasan Keuangan (semua tipe) ----

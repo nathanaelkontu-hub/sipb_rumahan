@@ -347,7 +347,6 @@ export default function LaporanKeuangan() {
               style={{ width: "100%", padding: "8px 12px", border: "1.5px solid #e2e8f0", borderRadius: 8, fontSize: 13, outline: "none", color: "#374151" }}
             >
               <option value="ringkasan">Ringkasan Penjualan</option>
-              <option value="detail">Detail Transaksi</option>
               <option value="pelanggan">Per Pelanggan</option>
               <option value="bulanan">Bulanan</option>
             </select>
@@ -533,11 +532,9 @@ export default function LaporanKeuangan() {
 
                       {(!selectedLaporan.tipeLaporan || selectedLaporan.tipeLaporan === "ringkasan") && (
                         <>
-                          <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Tanggal Pesan</th>
-                          <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Kode Pesanan</th>
-                          <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Nama Pelanggan</th>
-                          <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Total Harga</th>
-                          <th style={{ padding: "12px 14px", textAlign: "center", fontSize: 12, fontWeight: 700, color: "#475569" }}>Status</th>
+                          <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Nama Barang</th>
+                          <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Jumlah Terjual</th>
+                          <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Total Pendapatan</th>
                         </>
                       )}
                     </tr>
@@ -585,25 +582,9 @@ export default function LaporanKeuangan() {
 
                           {(!selectedLaporan.tipeLaporan || selectedLaporan.tipeLaporan === "ringkasan") && (
                             <>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155" }}>
-                                {new Date(row.tanggal_pesan).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
-                              </td>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#2563eb", fontWeight: 600 }}>{row.kode_pesanan}</td>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155", fontWeight: 500 }}>{row.nama_pelanggan}</td>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#1e293b", fontWeight: 600, textAlign: "right" }}>{formatRupiah(row.total_harga)}</td>
-                              <td style={{ padding: "12px 14px", textAlign: "center" }}>
-                                <span style={{
-                                  background: row.status === "selesai" ? "#dcfce7" : "#fef3c7",
-                                  color: row.status === "selesai" ? "#166534" : "#92400e",
-                                  padding: "2px 8px",
-                                  borderRadius: 12,
-                                  fontSize: 11,
-                                  fontWeight: 600,
-                                  textTransform: "capitalize"
-                                }}>
-                                  {row.status}
-                                </span>
-                              </td>
+                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155", fontWeight: 500 }}>{row.nama_barang}</td>
+                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155", textAlign: "right" }}>{row.total_qty}</td>
+                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#1e293b", fontWeight: 600, textAlign: "right" }}>{formatRupiah(row.total_pendapatan)}</td>
                             </>
                           )}
                         </tr>
