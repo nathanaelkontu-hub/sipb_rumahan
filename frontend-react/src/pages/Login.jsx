@@ -5,34 +5,43 @@ import { Eye, EyeOff } from "lucide-react";
 import API from "../api/api";
 import { motion } from "framer-motion";
 
+// Komponen utama untuk Halaman Login
 function Login() {
+  // Hook untuk navigasi antar halaman
   const navigate = useNavigate();
 
+  // Mengambil email yang tersimpan di localStorage (jika user sebelumnya mencentang "Remember me")
   const savedEmail = localStorage.getItem("remember_email") || "";
 
-
+  // State untuk input form login
   const [email, setEmail] = useState(savedEmail);
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(Boolean(savedEmail));
+  
+  // State untuk pesan error dan visibilitas password
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  // Fungsi yang dijalankan ketika tombol "Masuk" (form submit) ditekan
   async function handleLogin(e) {
-    e.preventDefault();
+    e.preventDefault(); // Mencegah reload halaman
     setError("");
 
     try {
+      // Memanggil API login
       const res = await API.post("/auth/login", {
         email,
         password,
       });
 
       if (res.data.success) {
+  // Hapus semua token dan data sesi yang mungkin masih ada sebelum login baru
   localStorage.removeItem("sipb_token");
   localStorage.removeItem("sipb_user");
   sessionStorage.removeItem("sipb_token");
   sessionStorage.removeItem("sipb_user");
 
+  // Jika yang login adalah admin
   if (res.data.user.role === "admin") {
     if (rememberMe) {
       localStorage.setItem("sipb_admin_token", res.data.token);
@@ -55,6 +64,7 @@ function Login() {
     }
   }
 
+  // Arahkan ke halaman dashboard (jika admin) atau beranda (jika pelanggan)
   if (res.data.user.role === "admin") {
     navigate("/admin/dashboard");
   } else {
@@ -62,14 +72,17 @@ function Login() {
   }
 }
     } catch (err) {
+      // Tampilkan pesan error jika kredensial salah
       setError(err.response?.data?.message || "Login gagal");
     }
   }
 
+  // Fungsi yang dipanggil ketika Login dengan Google berhasil
   async function handleGoogleSuccess(credentialResponse) {
     setError("");
 
     try {
+      // Mengirim kredensial Google ke API backend
       const res = await API.post("/auth/google", {
         credential: credentialResponse.credential,
       });
@@ -90,6 +103,7 @@ function Login() {
     }
   }
 
+  // Mengembalikan antarmuka UI halaman login
   return (
     <motion.div
     style={styles.page}
@@ -109,7 +123,7 @@ function Login() {
           <div style={styles.topLink}>
             Belum punya akun?
             <button onClick={() => navigate("/register")} style={styles.smallBtn}>
-              Sign up
+              Daftar
             </button>
           </div>
 
@@ -119,7 +133,7 @@ function Login() {
               <strong>SIPB Rumahan</strong>
             </div>
 
-            <h1 style={styles.title}>Welcome Back!</h1>
+            <h1 style={styles.title}>Selamat Datang!</h1>
             <p style={styles.subtitle}>Masuk ke akun SIPB kamu</p>
 
             <form onSubmit={handleLogin}>
@@ -157,7 +171,7 @@ function Login() {
   checked={rememberMe}
   onChange={(e) => setRememberMe(e.target.checked)}
 />
-                  Remember me
+                  Ingat saya
                 </label>
               </div>
 
@@ -176,6 +190,7 @@ function Login() {
     size="large"
     shape="pill"
     text="signin_with"
+    locale="id"
     width="360"
   />
 </div>

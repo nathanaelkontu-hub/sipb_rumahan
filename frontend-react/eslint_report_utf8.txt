@@ -1,0 +1,170 @@
+﻿
+C:\sipb-rumahan\frontend-react\src\pages\admin\Dashboard.jsx
+  1:8  error  'React' is defined but never used  no-unused-vars
+
+C:\sipb-rumahan\frontend-react\src\pages\admin\KoordinasiHarga.jsx
+    3:32  error    'Send' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-unused-vars
+    9:10  error    'generateOrderId' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       no-unused-vars
+   48:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  46 |   useEffect(() => {
+  47 |     const s = harga - dp;
+> 48 |     setSisa(s);
+     |     ^^^^^^^ Avoid calling setState() directly within an effect
+  49 |     setPersenDp(harga > 0 ? ((dp / harga) * 100).toFixed(0) : 0);
+  50 |   }, [harga, dp]);
+  51 |                                             react-hooks/set-state-in-effect
+   56:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  54 |     const tgl = new Date();
+  55 |     tgl.setDate(tgl.getDate() + 7);
+> 56 |     setJatuhTempo(tgl.toISOString().split("T")[0]);
+     |     ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  57 |   }, []);
+  58 |
+  59 |   useEffect(() => {                                        react-hooks/set-state-in-effect
+   62:9   error    Error: Cannot access variable before it is declared
+
+`cariPesanan` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  60 |     const delay = setTimeout(() => {
+  61 |       if (orderIdQuery && orderIdQuery.length >= 3) {
+> 62 |         cariPesanan(orderIdQuery);
+     |         ^^^^^^^^^^^ `cariPesanan` accessed before it is declared
+  63 |       } else if (!orderIdQuery) {
+  64 |         resetForm();
+  65 |       }
+
+   69 |
+   70 |   // Fungsi untuk mencari pesanan berdasarkan ID Pesanan / Order ID
+>  71 |   const cariPesanan = async (query) => {
+      |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  72 |     setIsSearching(true);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^
+>  73 |     try {
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 100 |     }
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 101 |   };
+      | ^^^^^ `cariPesanan` is declared here
+  102 |
+  103 |   const resetForm = () => {
+  104 |     setSelectedPesanan(null);       react-hooks/immutability
+   64:9   error    Error: Cannot access variable before it is declared
+
+`resetForm` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  62 |         cariPesanan(orderIdQuery);
+  63 |       } else if (!orderIdQuery) {
+> 64 |         resetForm();
+     |         ^^^^^^^^^ `resetForm` accessed before it is declared
+  65 |       }
+  66 |     }, 500);
+  67 |     return () => clearTimeout(delay);
+
+  101 |   };
+  102 |
+> 103 |   const resetForm = () => {
+      |   ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 104 |     setSelectedPesanan(null);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 105 |     setHarga(0);
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 112 |     setJatuhTempo(tgl.toISOString().split("T")[0]);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 113 |   };
+      | ^^^^^ `resetForm` is declared here
+  114 |
+  115 |   // Menyimpan kesepakatan harga ke server dan mengubah status pesanan menjadi "diproses"
+  116 |   const simpanKoordinasi = async () => {  react-hooks/immutability
+   68:6   warning  React Hook useEffect has a missing dependency: 'cariPesanan'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    react-hooks/exhaustive-deps
+  145:14  error    'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   no-unused-vars
+  208:14  error    'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   no-unused-vars
+
+C:\sipb-rumahan\frontend-react\src\pages\admin\LaporanKeuangan.jsx
+    9:10  error  'formatTanggal' is defined but never used               no-unused-vars
+   27:10  error  'jumlahGenerate' is assigned a value but never used     no-unused-vars
+   27:26  error  'setJumlahGenerate' is assigned a value but never used  no-unused-vars
+   40:14  error  'e' is defined but never used                           no-unused-vars
+  149:14  error  'err' is defined but never used                         no-unused-vars
+
+C:\sipb-rumahan\frontend-react\src\pages\admin\ManajemenUser.jsx
+    4:3    error  'Search' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               no-unused-vars
+    5:3    error  'Mail' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 no-unused-vars
+    6:3    error  'Phone' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                no-unused-vars
+    7:3    error  'Plus' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 no-unused-vars
+    8:3    error  'Edit2' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                no-unused-vars
+   10:3    error  'Users' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                no-unused-vars
+   11:3    error  'Shield' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               no-unused-vars
+   12:3    error  'UserCheck' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+   13:3    error  'UserX' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                no-unused-vars
+   90:7    error  Error: Cannot access variable before it is declared
+
+`showNotification` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  88 |     } catch (err) {
+  89 |       console.error("Gagal memuat daftar user:", err);
+> 90 |       showNotification("error", "Gagal memuat data pengguna dari server.");
+     |       ^^^^^^^^^^^^^^^^ `showNotification` accessed before it is declared
+  91 |     } finally {
+  92 |       setLoading(false);
+  93 |     }
+
+   98 |   }, [loadUsers]);
+   99 |
+> 100 |   const showNotification = (type, text) => {
+      |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 101 |     setAlertMsg({ type, text });
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 102 |     setTimeout(() => {
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 103 |       setAlertMsg(null);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 104 |     }, 5000);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 105 |   };
+      | ^^^^^ `showNotification` is declared here
+  106 |
+  107 |   // Filter & Search Logic
+  108 |   const filteredUsers = users.filter((u) => {  react-hooks/immutability
+   97:5    error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+   95 |
+   96 |   useEffect(() => {
+>  97 |     loadUsers();
+      |     ^^^^^^^^^ Avoid calling setState() directly within an effect
+   98 |   }, [loadUsers]);
+   99 |
+  100 |   const showNotification = (type, text) => {                                                                                                                                                                                                 react-hooks/set-state-in-effect
+  333:171  error  Duplicate key 'display'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-dupe-keys
+  344:171  error  Duplicate key 'display'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-dupe-keys
+  355:171  error  Duplicate key 'display'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-dupe-keys
+
+C:\sipb-rumahan\frontend-react\src\pages\admin\Pengaturan.jsx
+  4:3  error  'Bell' is defined but never used      no-unused-vars
+  5:3  error  'Lock' is defined but never used      no-unused-vars
+  6:3  error  'Palette' is defined but never used   no-unused-vars
+  7:3  error  'Database' is defined but never used  no-unused-vars
+
+Γ£û 33 problems (32 errors, 1 warning)
+

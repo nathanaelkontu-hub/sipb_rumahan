@@ -83,6 +83,7 @@ function validasiItemPesanan(item) {
   return null;
 }
 
+// Komponen Halaman Pesanan Saya (Pelanggan) untuk membuat permintaan pesanan (order) baru
 function PesananSaya() {
   const [form, setForm] = useState({
     items: [buatItemKosong()],
@@ -92,6 +93,7 @@ function PesananSaya() {
 
   const [message, setMessage] = useState("");
 
+  // Mengubah data (kategori, nama, jumlah) pada barang tertentu dalam form pesanan
   function handleItemChange(index, field, value) {
     const itemsBaru = [...form.items];
 
@@ -150,6 +152,7 @@ function PesananSaya() {
     });
   }
 
+  // Memvalidasi seluruh barang dan mengirimkan permintaan pesanan baru ke server
   async function kirimPesanan(e) {
     e.preventDefault();
     setMessage("");

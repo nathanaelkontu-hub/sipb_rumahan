@@ -1,15 +1,13 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import API from "../../api/api";
-import { Search, Save, Trash2, Send, User, Paperclip, X } from "lucide-react";
+import { Search, Save, Trash2, Eye, Paperclip, X, User } from "lucide-react";
+import getImageUrl from "../../utils/imageUrl";
 
 function formatRupiah(angka) {
   return "Rp " + parseFloat(angka || 0).toLocaleString("id-ID");
 }
 
-function generateOrderId(kodePesanan) {
-  return kodePesanan || "-";
-}
-
+// Komponen Halaman Koordinasi Harga (Admin) untuk negosiasi atau penentuan harga pesanan pelanggan
 export default function KoordinasiHarga() {
   // === STATE INPUT HARGA ===
   const [orderIdQuery, setOrderIdQuery] = useState("");
@@ -17,11 +15,15 @@ export default function KoordinasiHarga() {
   
   const [harga, setHarga] = useState(0);
   const [dp, setDp] = useState(0);
-  const [jatuhTempo, setJatuhTempo] = useState("");
+  const [jatuhTempo, setJatuhTempo] = useState(() => {
+    const tgl = new Date();
+    tgl.setDate(tgl.getDate() + 7);
+    return tgl.toISOString().split("T")[0];
+  });
   const [catatan, setCatatan] = useState("");
 
-  const [sisa, setSisa] = useState(0);
-  const [persenDp, setPersenDp] = useState(0);
+  const sisa = harga - dp;
+  const persenDp = harga > 0 ? ((dp / harga) * 100).toFixed(0) : 0;
 
   // === STATE CHAT ===
   const [chats, setChats] = useState([]);
@@ -41,32 +43,24 @@ export default function KoordinasiHarga() {
     setTimeout(() => setToast(null), 3000);
   };
 
-  // --- LOGIC INPUT HARGA ---
-  useEffect(() => {
-    const s = harga - dp;
-    setSisa(s);
-    setPersenDp(harga > 0 ? ((dp / harga) * 100).toFixed(0) : 0);
-  }, [harga, dp]);
-
-  useEffect(() => {
-    // Default jatuh tempo (H+7)
-    const tgl = new Date();
-    tgl.setDate(tgl.getDate() + 7);
-    setJatuhTempo(tgl.toISOString().split("T")[0]);
+  // --- LOGIC CHAT (Forward declaration for loadChats) ---
+  const loadChats = useCallback(async (id_pesanan) => {
+    setLoadingChat(true);
+    try {
+      const res = await API.get(`/admin/chat/${id_pesanan}`);
+      if (res.data.success) {
+        setChats(res.data.data);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingChat(false);
+      scrollToBottom();
+    }
   }, []);
 
-  useEffect(() => {
-    const delay = setTimeout(() => {
-      if (orderIdQuery && orderIdQuery.length >= 3) {
-        cariPesanan(orderIdQuery);
-      } else if (!orderIdQuery) {
-        resetForm();
-      }
-    }, 500);
-    return () => clearTimeout(delay);
-  }, [orderIdQuery]);
-
-  const cariPesanan = async (query) => {
+  // Fungsi untuk mencari pesanan berdasarkan ID Pesanan / Order ID
+  const cariPesanan = useCallback(async (query) => {
     setIsSearching(true);
     try {
       const res = await API.get("/admin/pesanan");
@@ -96,9 +90,9 @@ export default function KoordinasiHarga() {
     } finally {
       setIsSearching(false);
     }
-  };
+  }, [loadChats]);
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setSelectedPesanan(null);
     setHarga(0);
     setDp(0);
@@ -108,8 +102,20 @@ export default function KoordinasiHarga() {
     const tgl = new Date();
     tgl.setDate(tgl.getDate() + 7);
     setJatuhTempo(tgl.toISOString().split("T")[0]);
-  };
+  }, []);
 
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      if (orderIdQuery && orderIdQuery.length >= 3) {
+        cariPesanan(orderIdQuery);
+      } else if (!orderIdQuery) {
+        resetForm();
+      }
+    }, 500);
+    return () => clearTimeout(delay);
+  }, [orderIdQuery, cariPesanan, resetForm]);
+
+  // Menyimpan kesepakatan harga ke server dan mengubah status pesanan menjadi "diproses"
   const simpanKoordinasi = async () => {
     if (!selectedPesanan) { showToast("Cari dan pilih order ID terlebih dahulu!", "error"); return; }
     if (harga <= 0) { showToast("Harga yang disepakati wajib diisi!", "error"); return; }
@@ -146,21 +152,6 @@ export default function KoordinasiHarga() {
     }
   };
 
-  // --- LOGIC CHAT ---
-  const loadChats = async (id_pesanan) => {
-    setLoadingChat(true);
-    try {
-      const res = await API.get(`/admin/chat/${id_pesanan}`);
-      if (res.data.success) {
-        setChats(res.data.data);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoadingChat(false);
-      scrollToBottom();
-    }
-  };
 
   // POLLING CHAT
   useEffect(() => {
@@ -276,9 +267,13 @@ export default function KoordinasiHarga() {
                 <div style={{ position: "relative" }}>
                   <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 13, fontWeight: 600, color: "#64748b" }}>Rp</span>
                   <input
-                    type="number"
-                    value={harga}
-                    onChange={e => setHarga(e.target.value)}
+                    type="text"
+                    value={harga ? harga.toLocaleString("id-ID") : ""}
+                    onChange={e => {
+                      const raw = e.target.value.replace(/\D/g, "");
+                      setHarga(raw ? parseInt(raw, 10) : 0);
+                    }}
+                    placeholder="0"
                     style={{ width: "100%", padding: "9px 12px 9px 36px", boxSizing: "border-box", border: "1.5px solid #e2e8f0", borderRadius: 8, fontSize: 13, outline: "none", color: "#374151" }}
                   />
                 </div>
@@ -288,9 +283,13 @@ export default function KoordinasiHarga() {
                 <div style={{ position: "relative" }}>
                   <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 13, fontWeight: 600, color: "#64748b" }}>Rp</span>
                   <input
-                    type="number"
-                    value={dp}
-                    onChange={e => setDp(e.target.value)}
+                    type="text"
+                    value={dp ? dp.toLocaleString("id-ID") : ""}
+                    onChange={e => {
+                      const raw = e.target.value.replace(/\D/g, "");
+                      setDp(raw ? parseInt(raw, 10) : 0);
+                    }}
+                    placeholder="0"
                     style={{ width: "100%", padding: "9px 12px 9px 36px", boxSizing: "border-box", border: "1.5px solid #e2e8f0", borderRadius: 8, fontSize: 13, outline: "none", color: "#374151" }}
                   />
                 </div>
@@ -418,7 +417,7 @@ export default function KoordinasiHarga() {
                     <div style={{ display: "flex", alignItems: "flex-end", gap: 8, flexDirection: isAdmin ? "row" : "row-reverse" }}>
                       <div style={{ background: isAdmin ? "#f8fafc" : "#1e293b", color: isAdmin ? "#1e293b" : "white", border: isAdmin ? "1px solid #e2e8f0" : "none", padding: "10px 14px", borderRadius: 12, fontSize: 13, borderTopLeftRadius: isAdmin ? 0 : 12, borderTopRightRadius: isAdmin ? 12 : 0, display: "flex", flexDirection: "column", gap: 8, maxWidth: "100%" }}>
                         {c.gambar && (
-                          <img src={`http://localhost:3000/uploads/${c.gambar}`} alt="Chat Attachment" style={{ maxWidth: "100%", maxHeight: 200, borderRadius: 8, objectFit: "contain", alignSelf: isAdmin ? "flex-start" : "flex-end", cursor: "pointer" }} onClick={() => window.open(`http://localhost:3000/uploads/${c.gambar}`, "_blank")} />
+                          <img src={getImageUrl(c.gambar)} alt="Chat Attachment" style={{ maxWidth: "100%", maxHeight: 200, borderRadius: 8, objectFit: "contain", alignSelf: isAdmin ? "flex-start" : "flex-end", cursor: "pointer" }} onClick={() => window.open(getImageUrl(c.gambar), "_blank")} />
                         )}
                         {c.pesan && <span>{c.pesan}</span>}
                       </div>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Eye } from "lucide-react";
 import API from "../../api/api";
 
+// Komponen Halaman Riwayat Transaksi (Pelanggan) untuk melihat dan memfilter riwayat pesanan serta melakukan pembayaran
 function RiwayatTransaksi() {
   const [riwayat, setRiwayat] = useState([]);
   const [status, setStatus] = useState("");
@@ -28,6 +29,7 @@ function RiwayatTransaksi() {
     loadData();
   }, []);
 
+  // Filter riwayat berdasarkan status yang dipilih pada dropdown
   const dataFilter = status
     ? riwayat.filter((item) => item.status === status)
     : riwayat;
@@ -36,6 +38,7 @@ function RiwayatTransaksi() {
     return total + Number(item.total_harga || 0);
   }, 0);
 
+  // Membuka modal detail untuk melihat informasi lengkap pesanan
   function lihatDetailRiwayat(item) {
     setDetail(item);
     setShowPayForm(false);
@@ -43,6 +46,7 @@ function RiwayatTransaksi() {
     setBuktiBayar(null);
   }
 
+  // Mengunggah bukti pembayaran pelanggan ke server
   async function handleBayar(e) {
     e.preventDefault();
     if (!buktiBayar) {
@@ -583,8 +587,9 @@ eyeIcon: {
     maxWidth: 620,
     background: "white",
     borderRadius: 22,
-    overflow: "hidden",
     boxShadow: "0 20px 60px rgba(0,0,0,0.18)",
+    maxHeight: "90vh",
+    overflowY: "auto",
   },
 
   modalHeader: {

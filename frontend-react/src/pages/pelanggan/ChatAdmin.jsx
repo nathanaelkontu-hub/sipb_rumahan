@@ -1,7 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import API from "../../api/api";
 import { Paperclip, X } from "lucide-react";
+import getImageUrl from "../../utils/imageUrl";
 
+// Komponen Halaman Chat dengan Admin (Pelanggan)
 function ChatAdmin() {
   const [pesanan, setPesanan] = useState([]);
   const [selectedPesanan, setSelectedPesanan] = useState("");
@@ -59,6 +61,7 @@ function ChatAdmin() {
     }
   }
 
+  // Fungsi untuk memuat riwayat obrolan untuk pesanan tertentu
   async function loadChat(idPesanan) {
     try {
       setLoading(true);
@@ -76,6 +79,7 @@ function ChatAdmin() {
     }
   }
 
+  // Mengirim pesan (teks dan/atau gambar) ke server chat
   async function kirimChat(e) {
     if (e) e.preventDefault();
 
@@ -194,7 +198,7 @@ function ChatAdmin() {
                       }}
                     >
                       {chat.gambar && (
-                        <img src={`http://localhost:3000/uploads/${chat.gambar}`} alt="Chat Attachment" style={{ maxWidth: "100%", maxHeight: 200, borderRadius: 8, objectFit: "contain", alignSelf: dariUser ? "flex-end" : "flex-start", cursor: "pointer" }} onClick={() => window.open(`http://localhost:3000/uploads/${chat.gambar}`, "_blank")} />
+                        <img src={getImageUrl(chat.gambar)} alt="Chat Attachment" style={{ maxWidth: "100%", maxHeight: 200, borderRadius: 8, objectFit: "contain", alignSelf: dariUser ? "flex-end" : "flex-start", cursor: "pointer" }} onClick={() => window.open(getImageUrl(chat.gambar), "_blank")} />
                       )}
                       {chat.pesan && <span>{chat.pesan}</span>}
                     </div>

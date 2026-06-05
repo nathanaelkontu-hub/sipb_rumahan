@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import API from "../../api/api";
 import { Search } from "lucide-react";
+import getImageUrl from "../../utils/imageUrl";
 
 function formatRupiah(angka) {
   return "Rp " + parseFloat(angka || 0).toLocaleString("id-ID");
@@ -40,6 +41,7 @@ const STATUS_BG = {
   verifikasi: "#ede9fe",
 };
 
+// Komponen Halaman Daftar Pesanan (Admin)
 export default function DaftarPesanan() {
   const [pesanan, setPesanan] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -58,6 +60,7 @@ export default function DaftarPesanan() {
     setTimeout(() => setToast(null), 3000);
   };
 
+  // Fungsi untuk mengambil daftar pesanan dari server beserta filter dan pencarian
   const loadPesanan = useCallback(async () => {
     setLoading(true);
     try {
@@ -80,6 +83,7 @@ export default function DaftarPesanan() {
     return () => clearTimeout(delay);
   }, [loadPesanan]);
 
+  // Membuka modal verifikasi pesanan
   const openModal = (pesananItem) => {
     setModal({ 
       id: pesananItem.id_pesanan, 
@@ -101,6 +105,7 @@ export default function DaftarPesanan() {
     setStatusBayarBaru("");
   };
 
+  // Mengirim perubahan status (termasuk status pembayaran dan catatan) ke server
   const updateStatus = async () => {
     if (!modal) return;
     setSaving(true);
@@ -157,6 +162,7 @@ export default function DaftarPesanan() {
             style={{
               background: "white", borderRadius: 16, padding: 28,
               width: "90%", maxWidth: 460,
+              maxHeight: "90vh", overflowY: "auto",
             }}
           >
             <h3 style={{ fontSize: 16, fontWeight: 800, color: "#1e293b", margin: "0 0 20px" }}>
@@ -200,7 +206,7 @@ export default function DaftarPesanan() {
                 </label>
                 {modal.bukti_bayar ? (
                   <img 
-                    src={`http://localhost:3000/uploads/${modal.bukti_bayar}`} 
+                    src={getImageUrl(modal.bukti_bayar)} 
                     alt="Bukti Bayar" 
                     style={{ width: "100%", maxHeight: 300, objectFit: "contain", borderRadius: 8, border: "1.5px solid #e2e8f0", background: "#f8fafc" }}
                   />

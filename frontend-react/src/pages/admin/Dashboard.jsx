@@ -3,6 +3,7 @@ import API from '../../api/api';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { Package, Clock, DollarSign } from 'lucide-react';
 
+// Fungsi pembantu untuk memformat angka menjadi format mata uang Rupiah
 function formatRupiah(angka) {
   return "Rp " + parseFloat(angka || 0).toLocaleString("id-ID");
 }
@@ -11,10 +12,12 @@ function generateOrderId(kodePesanan) {
   return kodePesanan || "-";
 }
 
+// Komponen Halaman Beranda (Dashboard) Admin
 export default function Dashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Mengambil data statistik dashboard saat komponen pertama kali dimuat
   useEffect(() => {
     API.get('/admin/dashboard')
       .then(res => {

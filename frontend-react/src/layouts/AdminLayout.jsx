@@ -1,14 +1,18 @@
 import { motion } from "framer-motion";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import getImageUrl from "../utils/imageUrl";
 
+// Komponen Layout Utama untuk Halaman Admin
 function AdminLayout() {
   const navigate = useNavigate();
+  // Mengambil data user admin dari localStorage atau sessionStorage
   const user = JSON.parse(
   localStorage.getItem("sipb_admin_user") ||
   sessionStorage.getItem("sipb_admin_user") ||
   "{}"
 );
 
+  // Fungsi untuk logout (menghapus token dan sesi admin lalu kembali ke halaman login)
   const logout = () => {
     localStorage.removeItem("sipb_admin_token");
     localStorage.removeItem("sipb_admin_user");
@@ -17,6 +21,7 @@ function AdminLayout() {
     navigate("/login");
   };
 
+  // Daftar menu yang akan ditampilkan di Sidebar Admin
   const menus = [
     { to: "/admin/dashboard", label: "Beranda" },
     { to: "/admin/pesanan", label: "Daftar Pesanan" },
@@ -29,6 +34,7 @@ function AdminLayout() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+      {/* Bagian Header / Topbar */}
       <header style={{
         height: 72,
         position: "sticky",
@@ -57,7 +63,7 @@ function AdminLayout() {
             boxShadow: "0 2px 4px rgba(22, 163, 74, 0.1)"
           }}>
             {user.foto_profil ? (
-              <img src={`http://localhost:3000/uploads/${user.foto_profil}`} alt="Profil" style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />
+              <img src={getImageUrl(user.foto_profil)} alt="Profil" style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />
             ) : (
               (user.nama || "A").charAt(0).toUpperCase()
             )}
@@ -71,7 +77,9 @@ function AdminLayout() {
 
       </header>
 
+      {/* Bagian Utama: Sidebar dan Konten */}
       <div style={{ display: "flex" }}>
+        {/* Sidebar Navigasi Admin */}
         <aside style={{ width: 240, minHeight: "calc(100vh - 72px)", background: "white", borderRight: "1px solid #f1f5f9", padding: 16, display: "flex", flexDirection: "column" }}>
         <h2 style={{ fontSize: 20, fontWeight: 900, marginBottom: 24 }}>SIPB</h2>
 
@@ -100,6 +108,7 @@ function AdminLayout() {
         </button>
       </aside>
 
+      {/* Area Konten Utama dimana halaman spesifik akan dirender (menggunakan Outlet) */}
       <main style={{ flex: 1, padding: 28 }}>
   <motion.div
     initial={{ opacity: 0, y: 18 }}

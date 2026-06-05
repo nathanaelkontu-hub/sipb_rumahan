@@ -13,6 +13,7 @@ import {
   X 
 } from "lucide-react";
 
+// Komponen Halaman Pengaturan (Admin) untuk mengubah profil dan kata sandi
 export default function Pengaturan() {
   const user = JSON.parse(
     localStorage.getItem("sipb_admin_user") ||
@@ -55,6 +56,7 @@ export default function Pengaturan() {
     });
   };
 
+  // Menyimpan perubahan profil admin ke server
   const handleProfilSubmit = async (e) => {
     e.preventDefault();
     if (!formProfil.nama || !formProfil.telepon) {
@@ -96,7 +98,7 @@ export default function Pengaturan() {
     }
   };
 
-  // Change password handler
+  // Change password handler (Memproses dan memvalidasi penggantian kata sandi admin)
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import API from "../../api/api";
 
+// Komponen Halaman Beranda (Pelanggan) yang menampilkan ringkasan pesanan aktif dan riwayat singkat
 function Beranda() {
   const [pesanan, setPesanan] = useState([]);
 
@@ -20,6 +21,7 @@ function Beranda() {
     loadPesanan();
   }, []);
 
+  // Menghitung jumlah pesanan berdasarkan status untuk ditampilkan di kartu statistik
   const aktif = pesanan.filter((p) => p.status !== "selesai").length;
   const pending = pesanan.filter((p) => p.status === "pending" || p.status === "verifikasi").length;
   const selesai = pesanan.filter((p) => p.status === "selesai").length;

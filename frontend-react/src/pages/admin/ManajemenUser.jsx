@@ -1,16 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import API from "../../api/api";
 import { 
-  Search, 
-  Mail, 
-  Phone, 
-  Plus, 
-  Edit2, 
   Trash2, 
-  Users, 
-  Shield, 
-  UserCheck, 
-  UserX, 
   Eye, 
   EyeOff, 
   X, 
@@ -48,6 +39,7 @@ function formatTanggal(tgl) {
   });
 }
 
+// Komponen Halaman Manajemen User (Admin) untuk CRUD data pengguna (admin & pelanggan)
 export default function ManajemenUser() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -76,6 +68,14 @@ export default function ManajemenUser() {
   // Notifications
   const [alertMsg, setAlertMsg] = useState(null); // { type: 'success'|'error', text: '' }
 
+  const showNotification = useCallback((type, text) => {
+    setAlertMsg({ type, text });
+    setTimeout(() => {
+      setAlertMsg(null);
+    }, 5000);
+  }, []);
+
+  // Mengambil data seluruh pengguna dari server
   const loadUsers = useCallback(async () => {
     setLoading(true);
     try {
@@ -89,18 +89,11 @@ export default function ManajemenUser() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [showNotification]);
 
   useEffect(() => {
     loadUsers();
   }, [loadUsers]);
-
-  const showNotification = (type, text) => {
-    setAlertMsg({ type, text });
-    setTimeout(() => {
-      setAlertMsg(null);
-    }, 5000);
-  };
 
   // Filter & Search Logic
   const filteredUsers = users.filter((u) => {
@@ -119,7 +112,7 @@ export default function ManajemenUser() {
   const totalPelanggan = users.filter((u) => u.role === "pelanggan").length;
   const totalBanned = users.filter((u) => u.status === "ban" || u.status === "banned").length;
 
-  // Open Modal for Create
+  // Open Modal for Create (Menampilkan form tambah user baru)
   const handleCreateOpen = () => {
     setSelectedUser(null);
     setFormData({
@@ -161,7 +154,7 @@ export default function ManajemenUser() {
     setDeleteModalOpen(true);
   };
 
-  // Form Submit
+  // Form Submit (Menyimpan data pengguna baru atau yang sedang diedit ke server)
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setFormError("");
@@ -328,7 +321,7 @@ export default function ManajemenUser() {
         
         {/* Card 1: Total Admin */}
         <div style={{ background: "white", borderRadius: 16, padding: 20, border: "1px solid #f1f5f9", display: "flex", alignItems: "center", gap: 18, boxShadow: "0 1px 3px rgba(0,0,0,0.02)" }}>
-          <div style={{ width: 48, height: 48, borderRadius: 12, background: "#dbeafe", color: "#2563eb", display: "flex", alignItems: "center", justifyCenter: "center", display: "flex", justifyContent: "center" }}>
+          <div style={{ width: 48, height: 48, borderRadius: 12, background: "#dbeafe", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <span style={{ fontSize: 22, alignSelf: "center" }}>🛡️</span>
           </div>
           <div>
@@ -339,7 +332,7 @@ export default function ManajemenUser() {
 
         {/* Card 2: Total Pelanggan */}
         <div style={{ background: "white", borderRadius: 16, padding: 20, border: "1px solid #f1f5f9", display: "flex", alignItems: "center", gap: 18, boxShadow: "0 1px 3px rgba(0,0,0,0.02)" }}>
-          <div style={{ width: 48, height: 48, borderRadius: 12, background: "#f1f5f9", color: "#64748b", display: "flex", alignItems: "center", justifyCenter: "center", display: "flex", justifyContent: "center" }}>
+          <div style={{ width: 48, height: 48, borderRadius: 12, background: "#f1f5f9", color: "#64748b", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <span style={{ fontSize: 22, alignSelf: "center" }}>👤</span>
           </div>
           <div>
@@ -350,7 +343,7 @@ export default function ManajemenUser() {
 
         {/* Card 3: Di Banned */}
         <div style={{ background: "white", borderRadius: 16, padding: 20, border: "1px solid #f1f5f9", display: "flex", alignItems: "center", gap: 18, boxShadow: "0 1px 3px rgba(0,0,0,0.02)" }}>
-          <div style={{ width: 48, height: 48, borderRadius: 12, background: "#fee2e2", color: "#ef4444", display: "flex", alignItems: "center", justifyCenter: "center", display: "flex", justifyContent: "center" }}>
+          <div style={{ width: 48, height: 48, borderRadius: 12, background: "#fee2e2", color: "#ef4444", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <span style={{ fontSize: 22, alignSelf: "center" }}>🗑️</span>
           </div>
           <div>

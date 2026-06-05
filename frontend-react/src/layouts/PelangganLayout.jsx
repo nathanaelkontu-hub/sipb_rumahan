@@ -5,15 +5,19 @@ import riwayatIcon from "../assets/icons/riwayat-transaksi.svg";
 import profilIcon from "../assets/icons/profil-saya.svg";
 import chatIcon from "../assets/icons/chat-admin.svg";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import getImageUrl from "../utils/imageUrl";
 
+// Komponen Layout Utama untuk Halaman Pelanggan
 function PelangganLayout() {
   const navigate = useNavigate();
+  // Mengambil data user pelanggan dari localStorage atau sessionStorage
   const user = JSON.parse(
   localStorage.getItem("sipb_pelanggan_user") ||
   sessionStorage.getItem("sipb_pelanggan_user") ||
   "{}"
 );
 
+  // Fungsi untuk logout (menghapus token pelanggan lalu diarahkan ke login)
   const logout = () => {
     localStorage.removeItem("sipb_pelanggan_token");
     localStorage.removeItem("sipb_pelanggan_user");
@@ -22,6 +26,7 @@ function PelangganLayout() {
     navigate("/login");
   };
 
+  // Daftar menu yang ditampilkan di navigasi samping (Sidebar) Pelanggan
   const menus = [
     { to: "/pelanggan/beranda", icon: berandaIcon, label: "Beranda" },
     { to: "/pelanggan/pesanan-saya", icon: pesananIcon, label: "Pesanan Saya" },
@@ -49,7 +54,7 @@ function PelangganLayout() {
             boxShadow: "0 2px 4px rgba(37, 99, 235, 0.1)"
           }}>
             {user.foto_profil ? (
-              <img src={`http://localhost:3000/uploads/${user.foto_profil}`} alt="Profil" style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />
+              <img src={getImageUrl(user.foto_profil)} alt="Profil" style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />
             ) : (
               (user.nama || "P").charAt(0).toUpperCase()
             )}
@@ -100,6 +105,7 @@ function PelangganLayout() {
           </button>
         </aside>
 
+        {/* Area Konten Utama dimana halaman anak-anak (children route) dirender menggunakan Outlet */}
         <main style={styles.content}>
   <motion.div
     initial={{ opacity: 0, y: 18 }}

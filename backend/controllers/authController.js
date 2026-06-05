@@ -910,7 +910,7 @@ exports.uploadFotoProfil = async (req, res) => {
             });
         }
 
-        const foto_profil = req.file.filename;
+        const foto_profil = req.file.path;
 
         await db.execute(
             "UPDATE pelanggan SET foto_profil = ?, updated_at = NOW() WHERE id_pelanggan = ?",
@@ -921,7 +921,7 @@ exports.uploadFotoProfil = async (req, res) => {
             success: true,
             message: "Foto profil berhasil diperbarui",
             foto_profil,
-            foto_url: `http://localhost:3000/uploads/${foto_profil}`
+            foto_url: foto_profil
         });
 
     } catch (error) {

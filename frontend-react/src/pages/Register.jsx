@@ -4,11 +4,15 @@ import { Eye, EyeOff } from "lucide-react";
 import { motion } from "framer-motion";
 import API from "../api/api";
 
+// Komponen utama untuk halaman Registrasi
 function Register() {
+  // Hook untuk navigasi antar halaman
   const navigate = useNavigate();
+  // State untuk mengatur visibilitas password
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // State untuk menyimpan data input dari form registrasi
   const [form, setForm] = useState({
   nama: "",
   email: "",
@@ -19,17 +23,20 @@ function Register() {
   kode_admin: "",
 });
 
+  // State untuk pesan error, sukses, dan status loading
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Fungsi untuk menangani perubahan pada input form
   function handleChange(e) {
     setForm({
-      ...form,
-      [e.target.name]: e.target.value,
+      ...form, // Menyalin nilai form sebelumnya
+      [e.target.name]: e.target.value, // Memperbarui kolom yang sedang diketik
     });
   }
 
+  // Fungsi untuk mengecek validitas nama (mencegah kata kasar, acak, atau pola palsu)
   function namaTidakValid(nama) {
   const value = nama.trim().toLowerCase();
 
@@ -84,6 +91,7 @@ if (hurufKembarBerulang.test(value)) {
   return null;
 }
 
+// Fungsi untuk mengecek validitas email (mencegah domain sementara/buangan)
 function emailTidakValid(email) {
   const value = email.trim().toLowerCase();
 
@@ -137,6 +145,7 @@ function emailTidakValid(email) {
   return null;
 }
 
+// Fungsi untuk mengecek validitas nomor telepon (wajib format Indonesia)
 function teleponTidakValid(telepon) {
   const value = telepon.trim();
 
@@ -174,6 +183,7 @@ function teleponTidakValid(telepon) {
   return null;
 }
 
+  // Fungsi utama untuk memvalidasi seluruh field pada form sebelum dikirim ke server
   function validasiForm() {
   const namaRegex = /^[a-zA-Z\s.'-]{3,100}$/;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -239,8 +249,9 @@ if (pesanTelepon) {
   return true;
 }
 
+  // Fungsi yang dipanggil saat form disubmit (tombol "Buat Akun" ditekan)
   async function handleRegister(e) {
-  e.preventDefault();
+  e.preventDefault(); // Mencegah reload halaman
   setError("");
   setSuccess("");
   setLoading(true);
@@ -273,6 +284,7 @@ if (pesanTelepon) {
   }
 }
 
+  // Mengembalikan UI halaman registrasi dengan animasi dari framer-motion
   return (
      <motion.div
     style={styles.page}

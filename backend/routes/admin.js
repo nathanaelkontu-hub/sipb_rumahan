@@ -3,21 +3,14 @@ const router = express.Router();
 const adminController = require('../controllers/adminController');
 const { verifyToken, isAdmin } = require('../middleware/auth');
 const multer = require('multer');
+const { createCloudinaryStorage } = require('../config/cloudinary');
 const path = require('path');
 
-// Setup multer untuk upload file
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueName + path.extname(file.originalname));
-    }
-});
+// Setup multer untuk upload file menggunakan Cloudinary
+const storage = createCloudinaryStorage('admin_chat');
 
 const upload = multer({ 
-    storage,
+    storage: storage,
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit for admin
     fileFilter: (req, file, cb) => {
         const allowed = /jpeg|jpg|png|gif/;

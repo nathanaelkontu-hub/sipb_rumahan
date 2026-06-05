@@ -39,6 +39,7 @@ const ORDER_STATUS_COLOR = {
   verifikasi: "#f59e0b",
 };
 
+// Komponen Halaman Daftar Pelanggan (Admin)
 export default function DaftarPelanggan() {
   const [pelanggan, setPelanggan] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,6 +49,7 @@ export default function DaftarPelanggan() {
   const [selectedPelanggan, setSelectedPelanggan] = useState(null); // { id, nama }
   const [loadingDetail, setLoadingDetail] = useState(false);
 
+  // Fungsi untuk mengambil daftar pelanggan dari server dengan fitur pencarian (search)
   const loadPelanggan = useCallback(async () => {
     setLoading(true);
     try {
@@ -71,6 +73,7 @@ export default function DaftarPelanggan() {
     return () => clearTimeout(delay);
   }, [loadPelanggan]);
 
+  // Fungsi untuk membuka modal (pop-up) detail riwayat pesanan pelanggan
   const openDetailModal = async (idPelanggan, namaPelanggan) => {
     setSelectedPelanggan({ id: idPelanggan, nama: namaPelanggan });
     setModalOpen(true);
@@ -106,6 +109,7 @@ export default function DaftarPelanggan() {
     }
   };
 
+  // Fungsi untuk menutup modal riwayat pesanan
   const closeModal = () => {
     setModalOpen(false);
     setSelectedPelanggan(null);

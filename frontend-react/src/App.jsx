@@ -21,17 +21,23 @@ import RiwayatTransaksi from "./pages/pelanggan/RiwayatTransaksi";
 import ProfilSaya from "./pages/pelanggan/ProfilSaya";
 import ChatAdmin from "./pages/pelanggan/ChatAdmin";
 
+// Komponen untuk mengatur rute-rute yang memiliki animasi transisi
 function AnimatedRoutes() {
+  // Hook untuk mendapatkan URL saat ini
   const location = useLocation();
 
   return (
+    // AnimatePresence mendeteksi ketika komponen masuk/keluar dari DOM
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
+        {/* Redirect root (/) otomatis ke /login */}
         <Route path="/" element={<Navigate to="/login" />} />
 
+        {/* Rute publik (bisa diakses tanpa login) */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
+        {/* Rute khusus Admin yang dibungkus oleh AdminLayout */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="pesanan" element={<DaftarPesanan />} />
@@ -42,6 +48,7 @@ function AnimatedRoutes() {
           <Route path="pengaturan" element={<Pengaturan />} />
         </Route>
 
+        {/* Rute khusus Pelanggan yang dibungkus oleh PelangganLayout */}
         <Route path="/pelanggan" element={<PelangganLayout />}>
           <Route path="beranda" element={<Beranda />} />
           <Route path="pesanan-saya" element={<PesananSaya />} />
@@ -54,8 +61,10 @@ function AnimatedRoutes() {
   );
 }
 
+// Komponen Induk Aplikasi
 function App() {
   return (
+    // Membungkus seluruh aplikasi dengan BrowserRouter agar fitur routing (URL) berfungsi
     <BrowserRouter>
       <AnimatedRoutes />
     </BrowserRouter>

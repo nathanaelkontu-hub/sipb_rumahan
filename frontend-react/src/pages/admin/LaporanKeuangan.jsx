@@ -19,6 +19,7 @@ function formatTglIso(tglStr) {
   return new Date(tglStr).toISOString().split("T")[0];
 }
 
+// Komponen Halaman Laporan Keuangan (Admin) untuk melihat dan mengekspor laporan transaksi
 export default function LaporanKeuangan() {
   const [loading, setLoading] = useState(true);
   const [dataLaporan, setDataLaporan] = useState([]);
@@ -111,6 +112,7 @@ export default function LaporanKeuangan() {
     fetchData();
   }, []);
 
+  // Menampilkan detail laporan saat salah satu laporan di klik
   const tampilkanDetail = async (l) => {
     setSelectedLaporan(l);
     
@@ -152,6 +154,7 @@ export default function LaporanKeuangan() {
     }
   };
 
+  // Fungsi untuk men-generate/membuat laporan baru berdasarkan tipe dan rentang waktu
   const buatLaporan = async () => {
     if (!tglMulai || !tglSelesai) {
       showToast("Waktu mulai dan selesai wajib diisi!", "error");
@@ -204,6 +207,7 @@ export default function LaporanKeuangan() {
     }
   };
 
+  // Mengekspor laporan yang telah dibuat ke dalam format Excel (.xlsx)
   const exportLaporan = async (tipe, laporan) => {
     if (tipe !== "excel") {
       showToast(`Export ${tipe.toUpperCase()} belum tersedia`, "error");
@@ -241,7 +245,7 @@ export default function LaporanKeuangan() {
         localStorage.getItem("sipb_token") ||
         sessionStorage.getItem("sipb_token");
 
-      const url = `http://localhost:3000/api/admin/laporan/excel?tipe=${tipeData}&tgl_mulai=${mulai}&tgl_selesai=${selesai}`;
+      const url = `${import.meta.env.VITE_API_URL || "http://localhost:3000/api"}/admin/laporan/excel?tipe=${tipeData}&tgl_mulai=${mulai}&tgl_selesai=${selesai}`;
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });

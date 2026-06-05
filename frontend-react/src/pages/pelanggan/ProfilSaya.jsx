@@ -17,10 +17,12 @@ function getStoredUser() {
   );
 }
 
+import getImageUrl from "../../utils/imageUrl";
+
 const initialUser = getStoredUser();
 
 const initialFotoProfil = initialUser.foto_profil
-  ? `http://localhost:3000/uploads/${initialUser.foto_profil}`
+  ? getImageUrl(initialUser.foto_profil)
   : "";
 
 function namaTidakValid(nama) {
@@ -196,6 +198,7 @@ function namaJalanWarning(alamat) {
   return null;
 }
 
+// Komponen Halaman Profil Pelanggan untuk mengubah detail informasi, alamat, foto, dan kata sandi
 function ProfilSaya() {
   const [form, setForm] = useState(() => {
     const user = getStoredUser();
@@ -339,6 +342,7 @@ if (pesanNoRumah) {
     return true;
   }
 
+  // Mengirim pembaruan informasi profil pelanggan ke server
   async function simpanProfil() {
     setMessage("");
 
@@ -395,6 +399,7 @@ if (pesanNoRumah) {
     }
   }
 
+  // Mengubah kata sandi pelanggan di sistem
   async function updatePassword() {
     setMessage("");
 
@@ -450,6 +455,7 @@ if (pesanNoRumah) {
     }
   }
 
+  // Menangani proses upload dan pratinjau gambar foto profil baru
   async function uploadFotoProfil(e) {
     const file = e.target.files[0];
 

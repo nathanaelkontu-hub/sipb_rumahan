@@ -247,7 +247,7 @@ exports.kirimChat = async (req, res) => {
     try {
         const { id_pesanan, pesan } = req.body;
         const id_pengirim = req.user.id_pelanggan || req.user.id;
-        const gambar = req.file ? req.file.filename : null;
+        const gambar = req.file ? req.file.path : null;
 
         await db.execute(
             'INSERT INTO chat (id_pesanan, id_pengirim, pesan, gambar) VALUES (?, ?, ?, ?)',
@@ -278,7 +278,7 @@ exports.uploadBuktiPembayaran = async (req, res) => {
             });
         }
 
-        const bukti_bayar = req.file ? req.file.filename : null;
+        const bukti_bayar = req.file ? req.file.path : null;
 
         await db.execute(
             `INSERT INTO pembayaran 
