@@ -1,8 +1,10 @@
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 
-const poolConfig = process.env.AIVEN_DB_URL ? {
-    uri: process.env.AIVEN_DB_URL,
+const aivenUrl = process.env.AIVEN_DB_URL ? process.env.AIVEN_DB_URL.split('?')[0] : null;
+
+const poolConfig = aivenUrl ? {
+    uri: aivenUrl,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
