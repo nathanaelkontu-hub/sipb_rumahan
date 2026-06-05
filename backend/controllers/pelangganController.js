@@ -1,8 +1,15 @@
 const db = require('../config/database');
-const createDOMPurify = require('dompurify');
-const { JSDOM } = require('jsdom');
-const window = new JSDOM('').window;
-const DOMPurify = createDOMPurify(window);
+
+let DOMPurifyInstance = null;
+async function getDOMPurify() {
+    if (!DOMPurifyInstance) {
+        const { JSDOM } = require('jsdom');
+        const window = new JSDOM('').window;
+        const createDOMPurify = (await import('dompurify')).default;
+        DOMPurifyInstance = createDOMPurify(window);
+    }
+    return DOMPurifyInstance;
+}
 
 exports.getPesananSaya = async (req, res) => {
     try {
@@ -73,6 +80,7 @@ exports.buatPesanan = async (req, res) => {
                 message: "Deskripsi pesanan tidak valid: terdeteksi pengulangan karakter yang berlebihan"
             });
         }
+        const DOMPurify = await getDOMPurify();
         sanitizedCatatan = DOMPurify.sanitize(sanitizedCatatan);
 
         const [barang] = await conn.execute(
@@ -501,6 +509,7 @@ exports.buatPesananCustom = async (req, res) => {
                 message: "Deskripsi pesanan tidak valid: terdeteksi pengulangan karakter yang berlebihan"
             });
         }
+        const DOMPurify = await getDOMPurify();
         sanitizedCatatan = DOMPurify.sanitize(sanitizedCatatan);
 
         const [cekProfil] = await conn.execute(
