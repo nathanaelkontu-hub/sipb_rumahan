@@ -84,7 +84,7 @@ exports.buatPesanan = async (req, res) => {
         sanitizedCatatan = DOMPurify.sanitize(sanitizedCatatan);
 
         const [barang] = await conn.execute(
-            'SELECT * FROM barang WHERE id_barang = ? AND status = \\'tersedia\\'',
+            "SELECT * FROM barang WHERE id_barang = ? AND status = 'tersedia'",
             [id_barang]
         );
 
@@ -210,7 +210,7 @@ exports.getRiwayat = async (req, res) => {
 exports.getBarang = async (req, res) => {
     try {
         const [barang] = await db.execute(
-            'SELECT * FROM barang WHERE status = \\'tersedia\\' ORDER BY nama_barang'
+            "SELECT * FROM barang WHERE status = 'tersedia' ORDER BY nama_barang"
         );
         res.json({ success: true, data: barang });
     } catch (error) {
