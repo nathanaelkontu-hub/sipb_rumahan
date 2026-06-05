@@ -29,7 +29,7 @@ const verifyToken = async (req, res, next) => {
         console.log("verifyToken: decoded =", decoded);
         
         const [rows] = await db.execute(
-            'SELECT * FROM pelanggan WHERE id_pelanggan = ? AND status = "aktif"',
+            'SELECT * FROM pelanggan WHERE id_pelanggan = ? AND status = \\'aktif\\'',
             [decoded.id]
         );
 
@@ -48,7 +48,8 @@ const verifyToken = async (req, res, next) => {
         console.log("verifyToken: Token tidak valid, error =", error);
         return res.status(401).json({ 
             success: false, 
-            message: 'Token tidak valid' 
+            message: 'Token tidak valid',
+            detail: error.message
         });
     }
 };
