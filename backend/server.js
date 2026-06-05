@@ -52,10 +52,14 @@ app.use((err, req, res, next) => {
 });
 
 // ===== START SERVER =====
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log('================================');
-    console.log(`🚀 Server berjalan di port ${PORT}`);
-    console.log(`📡 API: http://localhost:${PORT}`);
-    console.log('================================');
-});
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log('================================');
+        console.log(`🚀 Server berjalan di port ${PORT}`);
+        console.log(`📡 API: http://localhost:${PORT}`);
+        console.log('================================');
+    });
+}
+
+module.exports = app;
