@@ -1,15 +1,6 @@
 const db = require('../config/database');
 
-let DOMPurifyInstance = null;
-async function getDOMPurify() {
-    if (!DOMPurifyInstance) {
-        const { JSDOM } = require('jsdom');
-        const window = new JSDOM('').window;
-        const createDOMPurify = (await import('dompurify')).default;
-        DOMPurifyInstance = createDOMPurify(window);
-    }
-    return DOMPurifyInstance;
-}
+
 
 exports.getPesananSaya = async (req, res) => {
     try {
@@ -80,8 +71,7 @@ exports.buatPesanan = async (req, res) => {
                 message: "Deskripsi pesanan tidak valid: terdeteksi pengulangan karakter yang berlebihan"
             });
         }
-        const DOMPurify = await getDOMPurify();
-        sanitizedCatatan = DOMPurify.sanitize(sanitizedCatatan);
+        sanitizedCatatan = sanitizedCatatan.replace(/<[^>]*>?/gm, '');
 
         const [barang] = await conn.execute(
             "SELECT * FROM barang WHERE id_barang = ? AND status = 'tersedia'",
@@ -509,8 +499,7 @@ exports.buatPesananCustom = async (req, res) => {
                 message: "Deskripsi pesanan tidak valid: terdeteksi pengulangan karakter yang berlebihan"
             });
         }
-        const DOMPurify = await getDOMPurify();
-        sanitizedCatatan = DOMPurify.sanitize(sanitizedCatatan);
+        sanitizedCatatan = sanitizedCatatan.replace(/<[^>]*>?/gm, '');
 
         const [cekProfil] = await conn.execute(
     `SELECT alamat, kota, kecamatan, kelurahan, no_rumah 
