@@ -324,14 +324,21 @@ function RiwayatTransaksi() {
                   </select>
                 </div>
                 <div style={{ marginBottom: 14 }}>
-                  <label style={styles.detailLabel}>Jumlah Bayar (Rp)</label>
-                  <input 
-                    type="number" 
-                    value={jumlahBayar} 
-                    onChange={e => setJumlahBayar(e.target.value)} 
-                    style={{...styles.select, width: "100%", marginTop: 6, boxSizing: "border-box"}}
-                    required
-                  />
+                  <label style={styles.detailLabel}>Jumlah Bayar</label>
+                  <div style={{ position: "relative", marginTop: 6 }}>
+                    <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 13, fontWeight: 600, color: "#64748b" }}>Rp</span>
+                    <input 
+                      type="text" 
+                      value={jumlahBayar ? Number(jumlahBayar).toLocaleString("id-ID") : ""} 
+                      onChange={e => {
+                        const raw = e.target.value.replace(/\D/g, "");
+                        setJumlahBayar(raw ? parseInt(raw, 10) : "");
+                      }} 
+                      style={{...styles.select, width: "100%", paddingLeft: 36, boxSizing: "border-box", margin: 0}}
+                      placeholder="0"
+                      required
+                    />
+                  </div>
                 </div>
                 <div style={{ marginBottom: 20 }}>
                   <label style={styles.detailLabel}>Bukti Pembayaran (Gambar)</label>
