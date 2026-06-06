@@ -41,6 +41,9 @@ router.put('/pelanggan/:id/status', adminController.updateStatusPelanggan);
 // Laporan
 router.get('/laporan', adminController.getLaporan);
 router.get('/laporan/excel', adminController.generateExcelLaporan);
+router.get('/laporan/tersimpan', adminController.getLaporanTersimpan);
+router.post('/laporan/tersimpan', adminController.simpanLaporan);
+router.delete('/laporan/tersimpan/:id', adminController.hapusLaporanTersimpan);
 
 // User
 router.get('/users', adminController.getAllUser);

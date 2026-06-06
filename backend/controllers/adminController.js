@@ -866,3 +866,55 @@ exports.getBarang = async (req, res) => {
         res.status(500).json({ success: false, message: 'Gagal memuat barang' });
     }
 };
+
+// 16. Laporan tersimpan (manual) - GET, POST, DELETE
+exports.getLaporanTersimpan = async (req, res) => {
+    try {
+        const [rows] = await db.execute(
+            `SELECT * FROM laporan_tersimpan ORDER BY created_at DESC`
+        );
+        res.json({ success: true, data: rows });
+    } catch (error) {
+        console.error('getLaporanTersimpan error:', error);
+        res.status(500).json({ success: false, message: 'Gagal memuat laporan tersimpan' });
+    }
+};
+
+exports.simpanLaporan = async (req, res) => {
+    try {
+        const { nama_laporan, tipe, tgl_mulai, tgl_selesai, total_pendapatan } = req.body;
+        const dibuat_oleh = req.user.id_pelanggan || req.user.id;
+
+        if (!nama_laporan || !tipe || !tgl_mulai || !tgl_selesai) {
+            return res.status(400).json({ success: false, message: 'Data laporan tidak lengkap' });
+        }
+
+        const [result] = await db.execute(
+            `INSERT INTO laporan_tersimpan (nama_laporan, tipe, tgl_mulai, tgl_selesai, total_pendapatan, dibuat_oleh)
+             VALUES (?, ?, ?, ?, ?, ?)`,
+            [nama_laporan, tipe, tgl_mulai, tgl_selesai, total_pendapatan || 0, dibuat_oleh]
+        );
+
+        res.status(201).json({ success: true, message: 'Laporan berhasil disimpan', id: result.insertId });
+    } catch (error) {
+        console.error('simpanLaporan error:', error);
+        res.status(500).json({ success: false, message: 'Gagal menyimpan laporan' });
+    }
+};
+
+exports.hapusLaporanTersimpan = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const [result] = await db.execute(
+            `DELETE FROM laporan_tersimpan WHERE id_laporan = ?`,
+            [id]
+        );
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'Laporan tidak ditemukan' });
+        }
+        res.json({ success: true, message: 'Laporan berhasil dihapus' });
+    } catch (error) {
+        console.error('hapusLaporanTersimpan error:', error);
+        res.status(500).json({ success: false, message: 'Gagal menghapus laporan' });
+    }
+};
