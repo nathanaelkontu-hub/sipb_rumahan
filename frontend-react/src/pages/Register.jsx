@@ -95,21 +95,20 @@ if (hurufKembarBerulang.test(value)) {
 function emailTidakValid(email) {
   const value = email.trim().toLowerCase();
 
-  const disposableDomains = [
-    "mailinator.com",
-    "10minutemail.com",
-    "guerrillamail.com",
-    "yopmail.com",
-    "tempmail.com",
-    "trashmail.com",
-    "fakeinbox.com",
-    "sharklasers.com"
+  const allowedDomains = [
+    "gmail.com",
+    "yahoo.com",
+    "yahoo.co.id",
+    "hotmail.com",
+    "outlook.com",
+    "icloud.com",
+    "belajar.id"
   ];
 
   const domain = value.split("@")[1];
 
-  if (disposableDomains.includes(domain)) {
-    return "Domain email sementara atau palsu tidak diperbolehkan";
+  if (!allowedDomains.includes(domain)) {
+    return "Gunakan email dari layanan yang valid (seperti gmail.com, yahoo.com, dll)";
   }
 
   const username = value.split("@")[0];
