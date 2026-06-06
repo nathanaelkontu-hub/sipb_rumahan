@@ -93,7 +93,8 @@ export default function DaftarPesanan() {
       status_bayar: pesananItem.status_bayar,
       catatan_admin: pesananItem.catatan_admin,
       total_harga: pesananItem.total_harga,
-      total_dibayar: pesananItem.total_dibayar 
+      total_dibayar: pesananItem.total_dibayar,
+      jumlah_bayar: pesananItem.jumlah_bayar
     });
     setStatusBaru(pesananItem.status);
     setCatatanAdmin(pesananItem.catatan_admin || "");
@@ -240,18 +241,30 @@ export default function DaftarPesanan() {
                 )}
               </div>
               <div style={{ display: "flex", gap: 14, background: "#f8fafc", padding: 12, borderRadius: 8, border: "1px solid #e2e8f0" }}>
-                <div style={{ flex: 1 }}>
-                  <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 2 }}>Total Harga</label>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#1e293b" }}>{formatRupiah(modal.total_harga || 0)}</div>
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 2 }}>Total Dibayar</label>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#10b981" }}>{formatRupiah(modal.total_dibayar || 0)}</div>
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 2 }}>Sisa Tagihan</label>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#ef4444" }}>{formatRupiah((modal.total_harga || 0) - (modal.total_dibayar || 0))}</div>
-                </div>
+                {(() => {
+                  const isCurrentPending = modal.status_bayar === 'pending';
+                  const simulatedDibayar = Number(modal.total_dibayar || 0) + 
+                    (isCurrentPending && statusBayarBaru === 'diterima' ? Number(modal.jumlah_bayar || 0) : 0);
+                  const sisaTagihan = Number(modal.total_harga || 0) - simulatedDibayar;
+                  return (
+                    <>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 2 }}>Total Harga</label>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#1e293b" }}>{formatRupiah(modal.total_harga || 0)}</div>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 2 }}>Total Dibayar</label>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#10b981" }}>{formatRupiah(simulatedDibayar)}</div>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 2 }}>Sisa Tagihan</label>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: sisaTagihan <= 0 ? "#10b981" : "#ef4444" }}>
+                          {sisaTagihan <= 0 ? (sisaTagihan < 0 ? "Kelebihan: " + formatRupiah(Math.abs(sisaTagihan)) : "Lunas") : formatRupiah(sisaTagihan)}
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
               <div>
                 <label style={{ fontSize: 12, fontWeight: 600, color: "#374151", display: "block", marginBottom: 5 }}>
