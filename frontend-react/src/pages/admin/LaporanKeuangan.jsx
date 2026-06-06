@@ -272,6 +272,16 @@ export default function LaporanKeuangan() {
     }
   };
 
+  // Menghapus laporan dari daftar (hanya laporan yang dibuat di sesi ini/disimpan di localStorage)
+  const hapusLaporan = (laporan) => {
+    const isLocal = laporanBaru.some(l => l.id === laporan.id || l.namaLaporan === laporan.namaLaporan);
+    if (isLocal) {
+      setLaporanBaru(prev => prev.filter(l => l.id !== laporan.id && l.namaLaporan !== laporan.namaLaporan));
+    } else {
+      setDataLaporan(prev => prev.filter(l => l.id !== laporan.id));
+    }
+  };
+
   const gabunganLaporan = [...laporanBaru, ...dataLaporan];
 
   return (
@@ -429,6 +439,13 @@ export default function LaporanKeuangan() {
                           {exportLoading === (l.id || l.namaLaporan)
                             ? <><Loader size={12} style={{ animation: "spin 1s linear infinite" }} /> Proses...</>
                             : <><FileDown size={12} /> Excel</>}
+                        </button>
+                        <button
+                          onClick={() => hapusLaporan(l)}
+                          title="Hapus laporan ini"
+                          style={{ background: "#fee2e2", color: "#dc2626", border: "none", borderRadius: 6, padding: "5px 10px", fontSize: 12, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}
+                        >
+                          ✕
                         </button>
                       </div>
                     </td>
