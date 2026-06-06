@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import API from "../../api/api";
 
@@ -228,6 +228,36 @@ function ProfilSaya() {
   const [fotoProfil, setFotoProfil] = useState(initialFotoProfil);
   const [message, setMessage] = useState("");
   const [loadingFoto, setLoadingFoto] = useState(false);
+  
+  const [stats, setStats] = useState({ memberSince: "Memuat...", totalOrders: 0 });
+
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const [profileRes, ordersRes] = await Promise.all([
+          API.get("/auth/profile"),
+          API.get("/pelanggan/pesanan")
+        ]);
+
+        let memberSince = "Baru saja";
+        if (profileRes.data.success && profileRes.data.data.created_at) {
+          const date = new Date(profileRes.data.data.created_at);
+          memberSince = date.toLocaleDateString("id-ID", { month: "short", year: "numeric" });
+        }
+
+        let totalOrders = 0;
+        if (ordersRes.data.success) {
+          totalOrders = ordersRes.data.data.length;
+        }
+
+        setStats({ memberSince, totalOrders });
+      } catch (err) {
+        console.error("Gagal memuat statistik profil:", err);
+        setStats({ memberSince: "Tidak diketahui", totalOrders: 0 });
+      }
+    }
+    fetchStats();
+  }, []);
 
   function handleChange(e) {
     setForm({
@@ -745,12 +775,12 @@ if (pesanNoRumah) {
 
             <div style={styles.infoRow}>
               <span>Anggota dari:</span>
-              <strong>Jan 2025</strong>
+              <strong>{stats.memberSince}</strong>
             </div>
 
             <div style={styles.infoRow}>
               <span>Total Pesanan:</span>
-              <strong>0</strong>
+              <strong>{stats.totalOrders}</strong>
             </div>
           </div>
         </div>
