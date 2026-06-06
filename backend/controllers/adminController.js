@@ -71,7 +71,8 @@ exports.getPesanan = async (req, res) => {
         const { search, status } = req.query;
         let query = `
             SELECT p.*, pl.nama as nama_pelanggan,
-                   py.bukti_bayar, py.jumlah_bayar, py.metode, py.status as status_bayar
+                   py.bukti_bayar, py.jumlah_bayar, py.metode, py.status as status_bayar,
+                   (SELECT COALESCE(SUM(jumlah_bayar), 0) FROM pembayaran WHERE id_pesanan = p.id_pesanan AND status = 'diterima') as total_dibayar
             FROM pesanan p 
             JOIN pelanggan pl ON p.id_pelanggan = pl.id_pelanggan
             LEFT JOIN pembayaran py ON py.id_pembayaran = (

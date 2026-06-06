@@ -91,7 +91,9 @@ export default function DaftarPesanan() {
       catatan: pesananItem.catatan,
       bukti_bayar: pesananItem.bukti_bayar,
       status_bayar: pesananItem.status_bayar,
-      catatan_admin: pesananItem.catatan_admin 
+      catatan_admin: pesananItem.catatan_admin,
+      total_harga: pesananItem.total_harga,
+      total_dibayar: pesananItem.total_dibayar 
     });
     setStatusBaru(pesananItem.status);
     setCatatanAdmin(pesananItem.catatan_admin || "");
@@ -202,7 +204,7 @@ export default function DaftarPesanan() {
               </div>
               <div>
                 <label style={{ fontSize: 12, fontWeight: 600, color: "#374151", display: "block", marginBottom: 5 }}>
-                  Bukti Pembayaran (Struk)
+                  Bukti Pembayaran Terakhir
                 </label>
                 {modal.bukti_bayar ? (
                   <img 
@@ -236,6 +238,20 @@ export default function DaftarPesanan() {
                     </select>
                   </div>
                 )}
+              </div>
+              <div style={{ display: "flex", gap: 14, background: "#f8fafc", padding: 12, borderRadius: 8, border: "1px solid #e2e8f0" }}>
+                <div style={{ flex: 1 }}>
+                  <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 2 }}>Total Harga</label>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#1e293b" }}>{formatRupiah(modal.total_harga || 0)}</div>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 2 }}>Total Dibayar</label>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#10b981" }}>{formatRupiah(modal.total_dibayar || 0)}</div>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 2 }}>Sisa Tagihan</label>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#ef4444" }}>{formatRupiah((modal.total_harga || 0) - (modal.total_dibayar || 0))}</div>
+                </div>
               </div>
               <div>
                 <label style={{ fontSize: 12, fontWeight: 600, color: "#374151", display: "block", marginBottom: 5 }}>
@@ -347,7 +363,7 @@ export default function DaftarPesanan() {
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid #f1f5f9" }}>
-                {["Order ID", "Nama Pelanggan", "Total Harga", "Total DP", "Tanggal Pemesanan", "Status", "Tindakan"].map(h => (
+                {["Order ID", "Nama Pelanggan", "Total Harga", "Total Dibayar", "Tanggal Pemesanan", "Status", "Tindakan"].map(h => (
                   <th key={h} style={{ padding: "14px 20px", textAlign: "left", fontSize: 13, fontWeight: 700, color: "#0f172a", background: "white", whiteSpace: "nowrap" }}>
                     {h}
                   </th>
@@ -370,7 +386,7 @@ export default function DaftarPesanan() {
               ) : (
                 pesanan.map(p => {
                   const orderId = generateOrderId(p.kode_pesanan);
-                  const dp = parseFloat(p.total_harga) / 2;
+                  const totalDibayar = Number(p.total_dibayar || 0);
                   return (
                     <tr
                       key={p.id_pesanan}
@@ -385,7 +401,7 @@ export default function DaftarPesanan() {
                       <td style={{ padding: "14px 20px" }}>
                         <span style={{ fontSize: 13, fontWeight: 700, color: "#1e293b" }}>{formatRupiah(p.total_harga)}</span>
                       </td>
-                      <td style={{ padding: "14px 20px", fontSize: 13, color: "#374151" }}>{formatRupiah(dp)}</td>
+                      <td style={{ padding: "14px 20px", fontSize: 13, color: "#374151" }}>{formatRupiah(totalDibayar)}</td>
                       <td style={{ padding: "14px 20px", fontSize: 13, color: "#374151" }}>{formatTanggal(p.tanggal_pesan)}</td>
                       <td style={{ padding: "14px 20px" }}>
                         <span style={{

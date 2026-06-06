@@ -42,7 +42,8 @@ function RiwayatTransaksi() {
   function lihatDetailRiwayat(item) {
     setDetail(item);
     setShowPayForm(false);
-    setJumlahBayar(item.total_harga || "");
+    const sisa = Number(item.total_harga || 0) - Number(item.total_dibayar || 0);
+    setJumlahBayar(sisa > 0 ? sisa : "");
     setBuktiBayar(null);
   }
 
@@ -287,20 +288,32 @@ function RiwayatTransaksi() {
                 <div style={{...styles.detailValue, color: "#1e40af"}}>
                   {detail.catatan_admin}
                 </div>
-              </div>
+                  {/* Detail Tambahan: Total Dibayar & Sisa */}
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                    <span style={styles.detailLabel}>Total Dibayar:</span>
+                    <span style={{ fontSize: 13, color: "#10b981", fontWeight: 600 }}>{formatRupiah(detail.total_dibayar || 0)}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                    <span style={styles.detailLabel}>Sisa Pembayaran:</span>
+                    <span style={{ fontSize: 13, color: "#ef4444", fontWeight: 600 }}>{formatRupiah(Math.max(0, Number(detail.total_harga || 0) - Number(detail.total_dibayar || 0)))}</span>
+                  </div>
+                </div>
             )}
 
             {!showPayForm ? (
-              <div style={styles.modalFooter}>
-                {(detail.status === "diproses" || detail.status === "pending") && Number(detail.total_harga || 0) > 0 && (!detail.status_bayar || detail.status_bayar === "ditolak" || detail.status_bayar === "pending") && (
-                  <button
-                    type="button"
-                    onClick={() => setShowPayForm(true)}
-                    style={{...styles.darkBtn, background: "#0ea5e9", marginRight: 10}}
-                  >
-                    Bayar Sekarang
-                  </button>
-                )}
+                <div style={styles.modalFooter}>
+                  {(detail.status === "diproses" || detail.status === "pending") && 
+                   Number(detail.total_harga || 0) > 0 && 
+                   Number(detail.total_dibayar || 0) < Number(detail.total_harga || 0) && 
+                   detail.status_bayar !== "pending" && (
+                    <button
+                      type="button"
+                      onClick={() => setShowPayForm(true)}
+                      style={{...styles.darkBtn, background: "#0ea5e9", marginRight: 10}}
+                    >
+                      Bayar Sekarang
+                    </button>
+                  )}
                 <button
                   type="button"
                   onClick={() => setDetail(null)}

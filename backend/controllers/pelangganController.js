@@ -14,11 +14,19 @@ exports.getPesananSaya = async (req, res) => {
                 p.tanggal_pesan,
                 p.total_harga,
                 p.status,
+                p.status,
                 p.catatan,
+                py.bukti_bayar,
+                py.jumlah_bayar,
+                py.status as status_bayar,
+                (SELECT COALESCE(SUM(jumlah_bayar), 0) FROM pembayaran WHERE id_pesanan = p.id_pesanan AND status = 'diterima') as total_dibayar,
                 GROUP_CONCAT(b.nama_barang SEPARATOR ', ') AS nama_barang,
                 GROUP_CONCAT(b.kategori_barang SEPARATOR ', ') AS kategori_barang,
                 GROUP_CONCAT(b.sub_kategori_barang SEPARATOR ', ') AS sub_kategori_barang
              FROM pesanan p
+             LEFT JOIN pembayaran py ON py.id_pembayaran = (
+                SELECT MAX(id_pembayaran) FROM pembayaran WHERE id_pesanan = p.id_pesanan
+             )
              LEFT JOIN detail_pesanan dp ON p.id_pesanan = dp.id_pesanan
              LEFT JOIN barang b ON dp.id_barang = b.id_barang
              WHERE p.id_pelanggan = ?
@@ -29,7 +37,10 @@ exports.getPesananSaya = async (req, res) => {
                 p.tanggal_pesan,
                 p.total_harga,
                 p.status,
-                p.catatan
+                p.catatan,
+                py.bukti_bayar,
+                py.jumlah_bayar,
+                py.status
              ORDER BY p.tanggal_pesan DESC`,
             [id_pelanggan]
         );
