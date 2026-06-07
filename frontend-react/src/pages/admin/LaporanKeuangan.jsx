@@ -69,44 +69,21 @@ export default function LaporanKeuangan() {
           setTotalYTD(ytd);
         }
 
-        // Gunakan data bulanan dari backend untuk generate laporan otomatis per bulan
-        if (resBulanan.data.success) {
-          const NAMA_BULAN = ['Januari','Februari','Maret','April','Mei','Juni',
-                              'Juli','Agustus','September','Oktober','November','Desember'];
-          const laporanBulanan = (resBulanan.data.data || []).map(row => {
-            const namaBln = NAMA_BULAN[parseInt(row.bulan) - 1] || row.bulan;
-            const key = `${row.tahun}-${String(row.bulan).padStart(2, "0")}`;
-            const lastDay = new Date(row.tahun, parseInt(row.bulan), 0).getDate();
-            return {
-              id: key,
-              namaLaporan: `Ringkasan Penjualan ${namaBln} ${row.tahun}`,
-              waktu: `${namaBln} ${row.tahun}`,
-              tipe: "Ringkasan Penjualan",
-              tipeLaporan: "ringkasan",
-              totalPendapatan: parseFloat(row.total_pendapatan || 0),
-              tglBuat: `${row.tahun}-${String(row.bulan).padStart(2, "0")}-01`,
-              tglMulai: `${row.tahun}-${String(row.bulan).padStart(2, "0")}-01`,
-              tglSelesai: `${row.tahun}-${String(row.bulan).padStart(2, "0")}-${lastDay}`,
-            };
-          });
-          setDataLaporan(laporanBulanan);
-        }
-
-        if (resPes.data.success) {
-          setPesananNunggak(resPes.data.data.length);
-          const totalNunggak = resPes.data.data.reduce((sum, p) => sum + parseFloat(p.total_harga || 0), 0);
-          setSaldoNunggak(totalNunggak);
-        }
-
-        // Muat laporan tersimpan dari database
+        // Proses laporan tersimpan terlebih dahulu untuk mendapatkan laporan yang di-hidden
+        let hiddenReports = [];
         if (resTersimpan.data.success) {
           const tipeMapping = {
             "ringkasan penjualan": "ringkasan",
             "detail transaksi": "detail",
             "per pelanggan": "pelanggan",
-            "bulanan": "bulanan"
+            "bulanan": "bulanan",
+            "hidden": "hidden"
           };
-          const dbLaporan = (resTersimpan.data.data || []).map(l => ({
+          const dbLaporanSemua = (resTersimpan.data.data || []);
+          
+          hiddenReports = dbLaporanSemua.filter(l => l.tipe === "hidden").map(l => l.nama_laporan);
+          
+          const dbLaporan = dbLaporanSemua.filter(l => l.tipe !== "hidden").map(l => ({
             id: String(l.id_laporan),
             id_db: l.id_laporan,
             namaLaporan: l.nama_laporan,
@@ -120,6 +97,37 @@ export default function LaporanKeuangan() {
             dariDB: true
           }));
           setLaporanBaru(dbLaporan);
+        }
+
+        // Gunakan data bulanan dari backend untuk generate laporan otomatis per bulan
+        if (resBulanan.data.success) {
+          const NAMA_BULAN = ['Januari','Februari','Maret','April','Mei','Juni',
+                              'Juli','Agustus','September','Oktober','November','Desember'];
+          const laporanBulanan = (resBulanan.data.data || [])
+            .map(row => {
+              const namaBln = NAMA_BULAN[parseInt(row.bulan) - 1] || row.bulan;
+              const key = `${row.tahun}-${String(row.bulan).padStart(2, "0")}`;
+              const lastDay = new Date(row.tahun, parseInt(row.bulan), 0).getDate();
+              return {
+                id: key,
+                namaLaporan: `Ringkasan Penjualan ${namaBln} ${row.tahun}`,
+                waktu: `${namaBln} ${row.tahun}`,
+                tipe: "Ringkasan Penjualan",
+                tipeLaporan: "ringkasan",
+                totalPendapatan: parseFloat(row.total_pendapatan || 0),
+                tglBuat: `${row.tahun}-${String(row.bulan).padStart(2, "0")}-01`,
+                tglMulai: `${row.tahun}-${String(row.bulan).padStart(2, "0")}-01`,
+                tglSelesai: `${row.tahun}-${String(row.bulan).padStart(2, "0")}-${lastDay}`,
+              };
+            })
+            .filter(lap => !hiddenReports.includes(lap.id));
+          setDataLaporan(laporanBulanan);
+        }
+
+        if (resPes.data.success) {
+          setPesananNunggak(resPes.data.data.length);
+          const totalNunggak = resPes.data.data.reduce((sum, p) => sum + parseFloat(p.total_harga || 0), 0);
+          setSaldoNunggak(totalNunggak);
         }
       } catch (err) {
         console.error("Gagal memuat laporan", err);
@@ -323,13 +331,24 @@ export default function LaporanKeuangan() {
         showToast("Gagal menghapus laporan: " + (err.response?.data?.message || err.message), "error");
       }
     } else {
-      // Laporan otomatis (dari grouping backend) — hanya hapus dari tampilan lokal
-      setDataLaporan(prev => prev.filter(l => l.id !== laporan.id));
-      if (selectedLaporan?.id === laporan.id) {
-        setSelectedLaporan(null);
-        setSelectedData([]);
+      // Laporan otomatis (dari grouping backend) — sembunyikan dengan menyimpan flag ke database
+      try {
+        await API.post("/admin/laporan/tersimpan", {
+          nama_laporan: laporan.id,
+          tipe: "hidden",
+          tgl_mulai: laporan.tglMulai,
+          tgl_selesai: laporan.tglSelesai,
+          total_pendapatan: 0
+        });
+        setDataLaporan(prev => prev.filter(l => l.id !== laporan.id));
+        if (selectedLaporan?.id === laporan.id) {
+          setSelectedLaporan(null);
+          setSelectedData([]);
+        }
+        showToast("Laporan berhasil dihapus!");
+      } catch (err) {
+        showToast("Gagal menghapus laporan: " + (err.response?.data?.message || err.message), "error");
       }
-      showToast("Laporan berhasil dihapus!");
     }
     setHapusLoading(false);
     setDeleteModalOpen(false);
