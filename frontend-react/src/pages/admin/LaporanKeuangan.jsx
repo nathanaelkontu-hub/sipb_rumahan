@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import API from "../../api/api";
-import { TrendingUp, AlertCircle, FileText, FileDown, Loader } from "lucide-react";
+import { TrendingUp, AlertCircle, FileText, FileDown, Loader, Trash2 } from "lucide-react";
 
 function formatRupiah(angka) {
   return "Rp " + parseFloat(angka || 0).toLocaleString("id-ID");
@@ -43,6 +43,9 @@ export default function LaporanKeuangan() {
   const [toast, setToast] = useState(null);
   const [exportLoading, setExportLoading] = useState(null);
   const [buatLoading, setBuatLoading] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedLaporanHapus, setSelectedLaporanHapus] = useState(null);
+  const [hapusLoading, setHapusLoading] = useState(false);
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type });
@@ -300,8 +303,11 @@ export default function LaporanKeuangan() {
     }
   };
 
-  // Menghapus laporan secara permanen dari database
-  const hapusLaporan = async (laporan) => {
+  // Menghapus laporan secara permanen
+  const hapusLaporanConfirm = async () => {
+    if (!selectedLaporanHapus) return;
+    setHapusLoading(true);
+    const laporan = selectedLaporanHapus;
     const isManual = laporanBaru.some(l => l.id === laporan.id);
     if (isManual && laporan.id_db) {
       // Laporan manual — hapus dari DB
@@ -323,7 +329,11 @@ export default function LaporanKeuangan() {
         setSelectedLaporan(null);
         setSelectedData([]);
       }
+      showToast("Laporan berhasil dihapus!");
     }
+    setHapusLoading(false);
+    setDeleteModalOpen(false);
+    setSelectedLaporanHapus(null);
   };
 
   // Gabungkan laporan manual (dari DB) + laporan otomatis (dari grouping pesanan)
@@ -486,11 +496,30 @@ export default function LaporanKeuangan() {
                             : <><FileDown size={12} /> Excel</>}
                         </button>
                         <button
-                          onClick={() => hapusLaporan(l)}
+                          onClick={() => { setSelectedLaporanHapus(l); setDeleteModalOpen(true); }}
                           title="Hapus laporan ini"
-                          style={{ background: "#fee2e2", color: "#dc2626", border: "none", borderRadius: 6, padding: "5px 10px", fontSize: 12, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}
+                          style={{
+                            background: "white",
+                            border: "1px solid #d1d5db",
+                            color: "black",
+                            padding: "8px 10px",
+                            borderRadius: 8,
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            transition: "all 0.2s",
+                          }}
+                          onMouseOver={e => e.currentTarget.style.background = "#fee2e2"}
+                          onMouseOut={e => e.currentTarget.style.background = "white"}
                         >
-                          ✕
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="black" strokeWidth="2" viewBox="0 0 24 24">
+                            <polyline points="3 6 5 6 21 6"/>
+                            <path d="M19 6l-1 14H6L5 6"/>
+                            <path d="M10 11v6"/>
+                            <path d="M14 11v6"/>
+                            <path d="M9 6V4h6v2"/>
+                          </svg>
                         </button>
                       </div>
                     </td>
@@ -663,6 +692,100 @@ export default function LaporanKeuangan() {
           </div>
         </div>
       )}
+      {/* MODAL: DELETE CONFIRMATION */}
+      {deleteModalOpen && selectedLaporanHapus && (
+        <div
+          onClick={() => setDeleteModalOpen(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(15, 23, 42, 0.4)",
+            backdropFilter: "blur(4px)",
+            zIndex: 999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "white",
+              borderRadius: 20,
+              padding: 28,
+              width: "90%",
+              maxWidth: 420,
+              boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
+              border: "1px solid #f1f5f9",
+              textAlign: "center",
+            }}
+          >
+            
+            <div
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: "50%",
+                background: "#fee2e2",
+                color: "#ef4444",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 16px",
+              }}
+            >
+              <Trash2 size={24} />
+            </div>
+
+            <h3 style={{ fontSize: 18, fontWeight: 800, color: "#1e293b", margin: "0 0 10px" }}>
+              Hapus Laporan?
+            </h3>
+            
+            <p style={{ fontSize: 13, color: "#64748b", margin: "0 0 24px", lineHeight: 1.5 }}>
+              Apakah Anda yakin ingin menghapus laporan <strong>{selectedLaporanHapus.namaLaporan}</strong> secara permanen? Tindakan ini tidak dapat dibatalkan.
+            </p>
+
+            <div style={{ display: "flex", gap: 12 }}>
+              <button
+                onClick={() => setDeleteModalOpen(false)}
+                style={{
+                  flex: 1,
+                  background: "#f1f5f9",
+                  color: "#334155",
+                  border: "none",
+                  borderRadius: 10,
+                  padding: "12px",
+                  fontSize: 13,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                }}
+              >
+                Batal
+              </button>
+              <button
+                onClick={hapusLaporanConfirm}
+                disabled={hapusLoading}
+                style={{
+                  flex: 1,
+                  background: "#ef4444",
+                  color: "white",
+                  border: "none",
+                  borderRadius: 10,
+                  padding: "12px",
+                  fontSize: 13,
+                  fontWeight: 700,
+                  cursor: hapusLoading ? "not-allowed" : "pointer",
+                  opacity: hapusLoading ? 0.7 : 1,
+                }}
+              >
+                {hapusLoading ? "Menghapus..." : "Hapus Laporan"}
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
