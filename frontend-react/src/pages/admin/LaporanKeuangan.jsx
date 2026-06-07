@@ -379,7 +379,7 @@ export default function LaporanKeuangan() {
 
       {/* Page Header */}
       <div style={{ marginBottom: 24 }}>
-        <p style={{ fontSize: 13, color: "#94a3b8", margin: "0 0 4px" }}>Admin</p>
+
         <h2 style={{ fontSize: 26, fontWeight: 800, color: "#1e293b", margin: 0, lineHeight: 1.2 }}>
           Laporan Keuangan
         </h2>
