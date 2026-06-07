@@ -392,7 +392,7 @@ ALTER TABLE `pesanan`
 --
 ALTER TABLE `chat`
   ADD CONSTRAINT `chat_ibfk_1` FOREIGN KEY (`id_pesanan`) REFERENCES `pesanan` (`id_pesanan`) ON DELETE CASCADE,
-  ADD CONSTRAINT `chat_ibfk_2` FOREIGN KEY (`id_pengirim`) REFERENCES `pelanggan` (`id_pelanggan`);
+  ADD CONSTRAINT `chat_ibfk_2` FOREIGN KEY (`id_pengirim`) REFERENCES `pelanggan` (`id_pelanggan`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `detail_pesanan`
