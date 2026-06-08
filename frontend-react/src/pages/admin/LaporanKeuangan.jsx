@@ -87,7 +87,7 @@ export default function LaporanKeuangan() {
             id: String(l.id_laporan),
             id_db: l.id_laporan,
             namaLaporan: l.nama_laporan,
-            waktu: l.tgl_mulai + " s/d " + l.tgl_selesai,
+            waktu: formatTglIso(l.tgl_mulai) + " s/d " + formatTglIso(l.tgl_selesai),
             tipe: l.tipe,
             tipeLaporan: tipeMapping[l.tipe.toLowerCase()] || "ringkasan",
             totalPendapatan: parseFloat(l.total_pendapatan || 0),
