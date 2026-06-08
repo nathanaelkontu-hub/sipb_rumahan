@@ -800,8 +800,7 @@ exports.generateExcelLaporan = async (req, res) => {
             }
             const summaries = [
                 ['KATEGORI FAVORIT', kategoriFavorit],
-                ['SUB-KATEGORI FAVORIT', subKategoriFavorit],
-                ['RATA-RATA PENJUALAN/BULAN', rataRata]
+                ['SUB-KATEGORI FAVORIT', subKategoriFavorit]
             ];
 
             summaries.forEach((s, i) => {
