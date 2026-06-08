@@ -663,10 +663,19 @@ exports.generateExcelLaporan = async (req, res) => {
                     { 4: '#,##0', 5: currencyFmt }
                 );
             }
+            
+            let totalPesananAll = 0;
+            let totalBelanjaAll = 0;
+            if (mainData.length > 0) {
+                totalPesananAll = mainData.reduce((acc, row) => acc + parseInt(row.jumlah_pesanan || 0), 0);
+                totalBelanjaAll = mainData.reduce((acc, row) => acc + parseFloat(row.total_belanja || 0), 0);
+            }
+            const rataRataPesanan = mainData.length > 0 ? (totalPesananAll / mainData.length) : 0;
+            const rataRataNilaiTransaksi = totalPesananAll > 0 ? (totalBelanjaAll / totalPesananAll) : 0;
+
             const summaries = [
-                ['KATEGORI FAVORIT', kategoriFavorit],
-                ['SUB-KATEGORI FAVORIT', subKategoriFavorit],
-                ['RATA-RATA PENJUALAN/BULAN', rataRata]
+                ['RATA-RATA PESANAN/PELANGGAN', (Math.round(rataRataPesanan * 10) / 10).toString() + ' pesanan'],
+                ['RATA-RATA NILAI TRANSAKSI', rataRataNilaiTransaksi]
             ];
 
             summaries.forEach((s, i) => {
