@@ -607,8 +607,18 @@ exports.generateExcelLaporan = async (req, res) => {
                 ['RATA-RATA PENJUALAN/BULAN', rataRata]
             ];
 
+            const titleRow = endRow + 4;
+            ws.getCell(titleRow, 1).value = 'DATA YANG DIOLAH';
+            ws.mergeCells(`A${titleRow}:C${titleRow}`);
+            ws.getCell(titleRow, 1).alignment = { vertical: 'middle', horizontal: 'center' };
+            ws.getCell(titleRow, 1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+            ws.getCell(titleRow, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+            ws.getCell(titleRow, 1).border = borderStyle;
+            ws.getCell(titleRow, 2).border = borderStyle;
+            ws.getCell(titleRow, 3).border = borderStyle;
+
             summaries.forEach((s, i) => {
-                const r = endRow + 4 + i;
+                const r = titleRow + 1 + i;
                 ws.getCell(r, 1).value = s[0];
                 ws.mergeCells(`A${r}:B${r}`);
                 ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'right' };
@@ -678,8 +688,18 @@ exports.generateExcelLaporan = async (req, res) => {
                 ['RATA-RATA NILAI TRANSAKSI', rataRataNilaiTransaksi]
             ];
 
+            const titleRow = endRow + 4;
+            ws.getCell(titleRow, 1).value = 'DATA YANG DIOLAH';
+            ws.mergeCells(`A${titleRow}:C${titleRow}`);
+            ws.getCell(titleRow, 1).alignment = { vertical: 'middle', horizontal: 'center' };
+            ws.getCell(titleRow, 1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+            ws.getCell(titleRow, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+            ws.getCell(titleRow, 1).border = borderStyle;
+            ws.getCell(titleRow, 2).border = borderStyle;
+            ws.getCell(titleRow, 3).border = borderStyle;
+
             summaries.forEach((s, i) => {
-                const r = endRow + 4 + i;
+                const r = titleRow + 1 + i;
                 ws.getCell(r, 1).value = s[0];
                 ws.mergeCells(`A${r}:B${r}`);
                 ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'right' };
@@ -741,8 +761,18 @@ exports.generateExcelLaporan = async (req, res) => {
                 ['RATA-RATA PENJUALAN/BULAN', rataRata]
             ];
 
+            const titleRow = endRow + 4;
+            ws.getCell(titleRow, 1).value = 'DATA YANG DIOLAH';
+            ws.mergeCells(`A${titleRow}:C${titleRow}`);
+            ws.getCell(titleRow, 1).alignment = { vertical: 'middle', horizontal: 'center' };
+            ws.getCell(titleRow, 1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+            ws.getCell(titleRow, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+            ws.getCell(titleRow, 1).border = borderStyle;
+            ws.getCell(titleRow, 2).border = borderStyle;
+            ws.getCell(titleRow, 3).border = borderStyle;
+
             summaries.forEach((s, i) => {
-                const r = endRow + 4 + i;
+                const r = titleRow + 1 + i;
                 ws.getCell(r, 1).value = s[0];
                 ws.mergeCells(`A${r}:B${r}`);
                 ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'right' };
@@ -801,8 +831,18 @@ exports.generateExcelLaporan = async (req, res) => {
                 ['SUB-KATEGORI FAVORIT', subKategoriFavorit]
             ];
 
+            const titleRow = endRow + 4;
+            ws.getCell(titleRow, 1).value = 'DATA YANG DIOLAH';
+            ws.mergeCells(`A${titleRow}:C${titleRow}`);
+            ws.getCell(titleRow, 1).alignment = { vertical: 'middle', horizontal: 'center' };
+            ws.getCell(titleRow, 1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+            ws.getCell(titleRow, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+            ws.getCell(titleRow, 1).border = borderStyle;
+            ws.getCell(titleRow, 2).border = borderStyle;
+            ws.getCell(titleRow, 3).border = borderStyle;
+
             summaries.forEach((s, i) => {
-                const r = endRow + 4 + i;
+                const r = titleRow + 1 + i;
                 ws.getCell(r, 1).value = s[0];
                 ws.mergeCells(`A${r}:B${r}`);
                 ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'right' };
