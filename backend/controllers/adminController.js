@@ -610,7 +610,7 @@ exports.generateExcelLaporan = async (req, res) => {
             const titleRow = endRow + 4;
             ws.getCell(titleRow, 1).value = 'DATA YANG DIOLAH';
             ws.mergeCells(`A${titleRow}:C${titleRow}`);
-            ws.getCell(titleRow, 1).alignment = { vertical: 'middle', horizontal: 'center' };
+            ws.getCell(titleRow, 1).alignment = { vertical: 'middle', horizontal: 'left', indent: 1 };
             ws.getCell(titleRow, 1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
             ws.getCell(titleRow, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
             ws.getCell(titleRow, 1).border = borderStyle;
@@ -621,8 +621,9 @@ exports.generateExcelLaporan = async (req, res) => {
                 const r = titleRow + 1 + i;
                 ws.getCell(r, 1).value = s[0];
                 ws.mergeCells(`A${r}:B${r}`);
-                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'right' };
+                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'left', indent: 1 };
                 ws.getCell(r, 1).border = borderStyle;
+                ws.getCell(r, 2).border = borderStyle;
                 
                 ws.getCell(r, 3).border = borderStyle;
                 if (typeof s[1] === 'number') {
@@ -691,7 +692,7 @@ exports.generateExcelLaporan = async (req, res) => {
             const titleRow = endRow + 4;
             ws.getCell(titleRow, 1).value = 'DATA YANG DIOLAH';
             ws.mergeCells(`A${titleRow}:C${titleRow}`);
-            ws.getCell(titleRow, 1).alignment = { vertical: 'middle', horizontal: 'center' };
+            ws.getCell(titleRow, 1).alignment = { vertical: 'middle', horizontal: 'left', indent: 1 };
             ws.getCell(titleRow, 1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
             ws.getCell(titleRow, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
             ws.getCell(titleRow, 1).border = borderStyle;
@@ -702,8 +703,9 @@ exports.generateExcelLaporan = async (req, res) => {
                 const r = titleRow + 1 + i;
                 ws.getCell(r, 1).value = s[0];
                 ws.mergeCells(`A${r}:B${r}`);
-                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'right' };
+                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'left', indent: 1 };
                 ws.getCell(r, 1).border = borderStyle;
+                ws.getCell(r, 2).border = borderStyle;
                 
                 ws.getCell(r, 3).border = borderStyle;
                 if (typeof s[1] === 'number') {
@@ -764,7 +766,7 @@ exports.generateExcelLaporan = async (req, res) => {
             const titleRow = endRow + 4;
             ws.getCell(titleRow, 1).value = 'DATA YANG DIOLAH';
             ws.mergeCells(`A${titleRow}:C${titleRow}`);
-            ws.getCell(titleRow, 1).alignment = { vertical: 'middle', horizontal: 'center' };
+            ws.getCell(titleRow, 1).alignment = { vertical: 'middle', horizontal: 'left', indent: 1 };
             ws.getCell(titleRow, 1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
             ws.getCell(titleRow, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
             ws.getCell(titleRow, 1).border = borderStyle;
@@ -775,8 +777,9 @@ exports.generateExcelLaporan = async (req, res) => {
                 const r = titleRow + 1 + i;
                 ws.getCell(r, 1).value = s[0];
                 ws.mergeCells(`A${r}:B${r}`);
-                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'right' };
+                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'left', indent: 1 };
                 ws.getCell(r, 1).border = borderStyle;
+                ws.getCell(r, 2).border = borderStyle;
                 
                 ws.getCell(r, 3).border = borderStyle;
                 if (typeof s[1] === 'number') {
@@ -834,7 +837,7 @@ exports.generateExcelLaporan = async (req, res) => {
             const titleRow = endRow + 4;
             ws.getCell(titleRow, 1).value = 'DATA YANG DIOLAH';
             ws.mergeCells(`A${titleRow}:C${titleRow}`);
-            ws.getCell(titleRow, 1).alignment = { vertical: 'middle', horizontal: 'center' };
+            ws.getCell(titleRow, 1).alignment = { vertical: 'middle', horizontal: 'left', indent: 1 };
             ws.getCell(titleRow, 1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
             ws.getCell(titleRow, 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
             ws.getCell(titleRow, 1).border = borderStyle;
@@ -845,8 +848,9 @@ exports.generateExcelLaporan = async (req, res) => {
                 const r = titleRow + 1 + i;
                 ws.getCell(r, 1).value = s[0];
                 ws.mergeCells(`A${r}:B${r}`);
-                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'right' };
+                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'left', indent: 1 };
                 ws.getCell(r, 1).border = borderStyle;
+                ws.getCell(r, 2).border = borderStyle;
                 
                 ws.getCell(r, 3).border = borderStyle;
                 if (typeof s[1] === 'number') {
