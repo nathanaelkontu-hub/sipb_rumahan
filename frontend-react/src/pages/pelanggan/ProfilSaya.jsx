@@ -154,14 +154,11 @@ function namaJalanTidakValid(alamat) {
 function noRumahTidakValid(noRumah) {
   const value = noRumah.trim();
 
-  const noRumahRegex = /^[a-zA-Z0-9\s./-]{1,15}$/;
+  // Pola: Diawali angka, boleh ada satu spasi/strip, lalu huruf
+  const noRumahRegex = /^\d+([ -][a-zA-Z]+)?$/;
 
   if (!noRumahRegex.test(value)) {
-    return "No rumah harus 1 sampai 15 karakter dan hanya boleh berisi huruf, angka, spasi, titik, /, dan -";
-  }
-
-  if (!/[a-zA-Z0-9]/.test(value)) {
-    return "No rumah harus mengandung angka atau huruf. Contoh: 7, C, 12-A, atau Blok C/7";
+    return "No rumah harus berupa angka, boleh diikuti spasi/strip dan huruf. Contoh: 104 C atau 12-A";
   }
 
   return null;
@@ -639,10 +636,14 @@ if (pesanNoRumah) {
       label="No Rumah"
       name="no_rumah"
       value={form.no_rumah}
-      onChange={handleChange}
+      onChange={(e) => {
+        // Membatasi ketikan agar hanya bisa angka, huruf, spasi, dan strip
+        const value = e.target.value.replace(/[^0-9a-zA-Z -]/g, "");
+        setForm({ ...form, no_rumah: value });
+      }}
       minLength={1}
       maxLength={15}
-      placeholder="Contoh: 104, C, atau 12-A"
+      placeholder="Contoh: 104 C atau 12-A"
     />
   </div>
 
