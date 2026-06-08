@@ -306,9 +306,12 @@ exports.getLaporan = async (req, res) => {
             [data] = await db.execute(
                 `SELECT pl.id_pelanggan, pl.nama as nama_pelanggan, pl.email, pl.telepon,
                         COUNT(DISTINCT p.id_pesanan) as jumlah_pesanan,
-                        SUM(p.total_harga) as total_belanja
+                        SUM(dp.subtotal) as total_belanja,
+                        SUM(dp.jumlah * b.harga_dasar) as total_modal
                  FROM pesanan p
                  JOIN pelanggan pl ON p.id_pelanggan = pl.id_pelanggan
+                 LEFT JOIN detail_pesanan dp ON dp.id_pesanan = p.id_pesanan
+                 LEFT JOIN barang b ON dp.id_barang = b.id_barang
                  WHERE ${dateFilterP}
                  GROUP BY pl.id_pelanggan
                  ORDER BY total_belanja DESC`,
@@ -316,22 +319,31 @@ exports.getLaporan = async (req, res) => {
             );
         } else if (tipe === 'bulanan') {
             const dateFilterBln = useRange
-                ? `status = 'selesai' AND DATE(tanggal_pesan) BETWEEN ? AND ?`
-                : `status = 'selesai' AND YEAR(tanggal_pesan) = ?`;
+                ? `p.status = 'selesai' AND DATE(p.tanggal_pesan) BETWEEN ? AND ?`
+                : `p.status = 'selesai' AND YEAR(p.tanggal_pesan) = ?`;
             [data] = await db.execute(
-                `SELECT MONTH(tanggal_pesan) as bulan, YEAR(tanggal_pesan) as tahun,
-                        COUNT(*) as jumlah_pesanan,
-                        SUM(total_harga) as total_pendapatan
-                 FROM pesanan
+                `SELECT MONTH(p.tanggal_pesan) as bulan, YEAR(p.tanggal_pesan) as tahun,
+                        COUNT(DISTINCT p.id_pesanan) as jumlah_pesanan,
+                        SUM(dp.jumlah) as total_qty,
+                        SUM(dp.subtotal) as total_pendapatan,
+                        SUM(dp.jumlah * b.harga_dasar) as total_modal
+                 FROM pesanan p
+                 LEFT JOIN detail_pesanan dp ON dp.id_pesanan = p.id_pesanan
+                 LEFT JOIN barang b ON dp.id_barang = b.id_barang
                  WHERE ${dateFilterBln}
-                 GROUP BY YEAR(tanggal_pesan), MONTH(tanggal_pesan)
+                 GROUP BY YEAR(p.tanggal_pesan), MONTH(p.tanggal_pesan)
                  ORDER BY tahun ASC, bulan ASC`,
                 dateParams
             );
         } else {
             // ringkasan (default): rekap per barang
             [data] = await db.execute(
-                `SELECT b.nama_barang, SUM(dp.jumlah) as total_qty, SUM(dp.subtotal) as total_pendapatan
+                `SELECT b.nama_barang, 
+                        SUM(dp.jumlah) as total_qty, 
+                        SUM(dp.subtotal) as total_pendapatan,
+                        b.harga_dasar as harga_beli_satuan,
+                        MAX(dp.harga_satuan) as harga_jual_max,
+                        MIN(dp.harga_satuan) as harga_jual_min
                  FROM detail_pesanan dp
                  JOIN pesanan p ON dp.id_pesanan = p.id_pesanan
                  JOIN barang b ON dp.id_barang = b.id_barang
@@ -396,9 +408,12 @@ exports.generateExcelLaporan = async (req, res) => {
             [mainData] = await db.execute(
                 `SELECT pl.nama as nama_pelanggan, pl.email, pl.telepon,
                         COUNT(DISTINCT p.id_pesanan) as jumlah_pesanan,
-                        SUM(p.total_harga) as total_belanja
+                        SUM(dp.subtotal) as total_belanja,
+                        SUM(dp.jumlah * b.harga_dasar) as total_modal
                  FROM pesanan p
                  JOIN pelanggan pl ON p.id_pelanggan = pl.id_pelanggan
+                 LEFT JOIN detail_pesanan dp ON dp.id_pesanan = p.id_pesanan
+                 LEFT JOIN barang b ON dp.id_barang = b.id_barang
                  WHERE p.status = 'selesai' AND DATE(p.tanggal_pesan) BETWEEN ? AND ?
                  GROUP BY pl.id_pelanggan
                  ORDER BY total_belanja DESC`,
@@ -406,19 +421,28 @@ exports.generateExcelLaporan = async (req, res) => {
             );
         } else if (tipe === 'bulanan') {
             [mainData] = await db.execute(
-                `SELECT YEAR(tanggal_pesan) as tahun, MONTH(tanggal_pesan) as bulan,
-                        COUNT(*) as jumlah_pesanan,
-                        SUM(total_harga) as total_pendapatan
-                 FROM pesanan
-                 WHERE status = 'selesai' AND DATE(tanggal_pesan) BETWEEN ? AND ?
-                 GROUP BY YEAR(tanggal_pesan), MONTH(tanggal_pesan)
+                `SELECT MONTH(p.tanggal_pesan) as bulan, YEAR(p.tanggal_pesan) as tahun,
+                        COUNT(DISTINCT p.id_pesanan) as jumlah_pesanan,
+                        SUM(dp.jumlah) as total_qty,
+                        SUM(dp.subtotal) as total_pendapatan,
+                        SUM(dp.jumlah * b.harga_dasar) as total_modal
+                 FROM pesanan p
+                 LEFT JOIN detail_pesanan dp ON dp.id_pesanan = p.id_pesanan
+                 LEFT JOIN barang b ON dp.id_barang = b.id_barang
+                 WHERE p.status = 'selesai' AND DATE(p.tanggal_pesan) BETWEEN ? AND ?
+                 GROUP BY YEAR(p.tanggal_pesan), MONTH(p.tanggal_pesan)
                  ORDER BY tahun ASC, bulan ASC`,
                 [tgl_mulai, tgl_selesai]
             );
         } else {
             // ringkasan (default): group by barang
             [mainData] = await db.execute(
-                `SELECT b.nama_barang, SUM(dp.jumlah) as total_qty, SUM(dp.subtotal) as total_pendapatan
+                `SELECT b.nama_barang, 
+                        SUM(dp.jumlah) as total_qty, 
+                        SUM(dp.subtotal) as total_pendapatan,
+                        b.harga_dasar as harga_beli_satuan,
+                        MAX(dp.harga_satuan) as harga_jual_max,
+                        MIN(dp.harga_satuan) as harga_jual_min
                  FROM detail_pesanan dp
                  JOIN pesanan p ON dp.id_pesanan = p.id_pesanan
                  JOIN barang b ON dp.id_barang = b.id_barang
