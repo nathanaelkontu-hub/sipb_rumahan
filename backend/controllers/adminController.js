@@ -601,6 +601,31 @@ exports.generateExcelLaporan = async (req, res) => {
                     { 6: currencyFmt, 7: currencyFmt }
                 );
             }
+            const summaries = [
+                ['KATEGORI FAVORIT', kategoriFavorit],
+                ['SUB-KATEGORI FAVORIT', subKategoriFavorit],
+                ['RATA-RATA PENJUALAN/BULAN', rataRata]
+            ];
+
+            summaries.forEach((s, i) => {
+                const r = endRow + 4 + i;
+                ws.getCell(r, 1).value = s[0];
+                ws.getCell(r, 2).value = s[1];
+                ws.mergeCells(`A${r}:B${r}`);
+                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'center' };
+                ws.getCell(r, 1).border = borderStyle;
+                ws.getCell(r, 3).border = borderStyle;
+                if (typeof s[1] === 'number') {
+                    ws.getCell(r, 3).value = s[1];
+                    ws.getCell(r, 3).numFmt = currencyFmt;
+                    ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'right' };
+                } else {
+                    ws.getCell(r, 3).value = s[1];
+                    ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'left' };
+                }
+                ws.mergeCells(`C${r}:G${r}`);
+            });
+
             ws.getColumn(1).width = 14; ws.getColumn(2).width = 18; ws.getColumn(3).width = 22;
             ws.getColumn(4).width = 25; ws.getColumn(5).width = 8;  ws.getColumn(6).width = 18; ws.getColumn(7).width = 18;
 
@@ -639,6 +664,31 @@ exports.generateExcelLaporan = async (req, res) => {
                     { 4: '#,##0', 5: currencyFmt }
                 );
             }
+            const summaries = [
+                ['KATEGORI FAVORIT', kategoriFavorit],
+                ['SUB-KATEGORI FAVORIT', subKategoriFavorit],
+                ['RATA-RATA PENJUALAN/BULAN', rataRata]
+            ];
+
+            summaries.forEach((s, i) => {
+                const r = endRow + 4 + i;
+                ws.getCell(r, 1).value = s[0];
+                ws.getCell(r, 2).value = s[1];
+                ws.mergeCells(`A${r}:B${r}`);
+                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'center' };
+                ws.getCell(r, 1).border = borderStyle;
+                ws.getCell(r, 3).border = borderStyle;
+                if (typeof s[1] === 'number') {
+                    ws.getCell(r, 3).value = s[1];
+                    ws.getCell(r, 3).numFmt = currencyFmt;
+                    ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'right' };
+                } else {
+                    ws.getCell(r, 3).value = s[1];
+                    ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'left' };
+                }
+                ws.mergeCells(`C${r}:G${r}`);
+            });
+
             ws.getColumn(1).width = 25; ws.getColumn(2).width = 28;
             ws.getColumn(3).width = 16; ws.getColumn(4).width = 16; ws.getColumn(5).width = 22;
 
@@ -680,6 +730,31 @@ exports.generateExcelLaporan = async (req, res) => {
                     { 3: '#,##0', 4: currencyFmt, 5: '0.00%' }
                 );
             }
+            const summaries = [
+                ['KATEGORI FAVORIT', kategoriFavorit],
+                ['SUB-KATEGORI FAVORIT', subKategoriFavorit],
+                ['RATA-RATA PENJUALAN/BULAN', rataRata]
+            ];
+
+            summaries.forEach((s, i) => {
+                const r = endRow + 4 + i;
+                ws.getCell(r, 1).value = s[0];
+                ws.getCell(r, 2).value = s[1];
+                ws.mergeCells(`A${r}:B${r}`);
+                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'center' };
+                ws.getCell(r, 1).border = borderStyle;
+                ws.getCell(r, 3).border = borderStyle;
+                if (typeof s[1] === 'number') {
+                    ws.getCell(r, 3).value = s[1];
+                    ws.getCell(r, 3).numFmt = currencyFmt;
+                    ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'right' };
+                } else {
+                    ws.getCell(r, 3).value = s[1];
+                    ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'left' };
+                }
+                ws.mergeCells(`C${r}:G${r}`);
+            });
+
             ws.getColumn(1).width = 16; ws.getColumn(2).width = 10;
             ws.getColumn(3).width = 18; ws.getColumn(4).width = 22; ws.getColumn(5).width = 15;
 
@@ -717,6 +792,31 @@ exports.generateExcelLaporan = async (req, res) => {
                     { 2: '#,##0', 3: currencyFmt }
                 );
             }
+            const summaries = [
+                ['KATEGORI FAVORIT', kategoriFavorit],
+                ['SUB-KATEGORI FAVORIT', subKategoriFavorit],
+                ['RATA-RATA PENJUALAN/BULAN', rataRata]
+            ];
+
+            summaries.forEach((s, i) => {
+                const r = endRow + 4 + i;
+                ws.getCell(r, 1).value = s[0];
+                ws.getCell(r, 2).value = s[1];
+                ws.mergeCells(`A${r}:B${r}`);
+                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'center' };
+                ws.getCell(r, 1).border = borderStyle;
+                ws.getCell(r, 3).border = borderStyle;
+                if (typeof s[1] === 'number') {
+                    ws.getCell(r, 3).value = s[1];
+                    ws.getCell(r, 3).numFmt = currencyFmt;
+                    ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'right' };
+                } else {
+                    ws.getCell(r, 3).value = s[1];
+                    ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'left' };
+                }
+                ws.mergeCells(`C${r}:G${r}`);
+            });
+
             ws.getColumn(1).width = 25; ws.getColumn(2).width = 18; ws.getColumn(3).width = 25;
         }
 
