@@ -389,6 +389,44 @@ exports.generateExcelLaporan = async (req, res) => {
         const NAMA_BULAN = ['Januari','Februari','Maret','April','Mei','Juni',
                             'Juli','Agustus','September','Oktober','November','Desember'];
 
+
+        // ---- Fetch Global Stats ----
+        const [[statSummary]] = await db.execute(`
+            SELECT SUM(p.total_harga) as total_revenue
+            FROM pesanan p
+            WHERE p.status = 'selesai' AND DATE(p.tanggal_pesan) BETWEEN ? AND ?
+        `, [tgl_mulai, tgl_selesai]);
+
+        const [kategoriData] = await db.execute(`
+            SELECT b.kategori_barang, SUM(dp.jumlah) as total_qty
+            FROM detail_pesanan dp
+            JOIN pesanan p ON dp.id_pesanan = p.id_pesanan
+            JOIN barang b ON dp.id_barang = b.id_barang
+            WHERE p.status = 'selesai' AND DATE(p.tanggal_pesan) BETWEEN ? AND ?
+            GROUP BY b.kategori_barang
+            ORDER BY total_qty DESC
+            LIMIT 1
+        `, [tgl_mulai, tgl_selesai]);
+
+        const [subKategoriData] = await db.execute(`
+            SELECT b.sub_kategori_barang, SUM(dp.jumlah) as total_qty
+            FROM detail_pesanan dp
+            JOIN pesanan p ON dp.id_pesanan = p.id_pesanan
+            JOIN barang b ON dp.id_barang = b.id_barang
+            WHERE p.status = 'selesai' AND DATE(p.tanggal_pesan) BETWEEN ? AND ?
+            GROUP BY b.sub_kategori_barang
+            ORDER BY total_qty DESC
+            LIMIT 1
+        `, [tgl_mulai, tgl_selesai]);
+
+        const startDate = new Date(tgl_mulai);
+        const endDate = new Date(tgl_selesai);
+        const diffMonths = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth()) + 1;
+        const rataRata = (statSummary.total_revenue || 0) / (diffMonths || 1);
+
+        const kategoriFavorit = kategoriData.length > 0 ? kategoriData[0].kategori_barang : '-';
+        const subKategoriFavorit = subKategoriData.length > 0 ? subKategoriData[0].sub_kategori_barang : '-';
+
         // ---- Fetch data sesuai tipe ----
         let mainData = [];
 
@@ -608,13 +646,13 @@ exports.generateExcelLaporan = async (req, res) => {
 
             const sumRowStart = startRow + mainData.length + 2;
             const totalLabaBersih = totalUntungKotor - totalModalAll;
+            
             const summaries = [
-                ['REKAPAN MODAL', totalModalAll],
-                ['REKAPAN UNTUNG (KOTOR)', totalUntungKotor],
-                ['REKAPAN RUGI (RETUR)', 0],
-                ['TOTAL LABA BERSIH', totalLabaBersih],
-                ['TOTAL (MODAL + LABA BERSIH)', totalUntungKotor]
+                ['KATEGORI FAVORIT', kategoriFavorit],
+                ['SUB-KATEGORI FAVORIT', subKategoriFavorit],
+                ['RATA-RATA PENJUALAN/BULAN', rataRata]
             ];
+
 
             summaries.forEach((s, i) => {
                 const r = sumRowStart + i;
@@ -673,13 +711,13 @@ exports.generateExcelLaporan = async (req, res) => {
 
             const sumRowStart = startRow + mainData.length + 2;
             const totalLabaBersih = totalUntungKotor - totalModalAll;
+            
             const summaries = [
-                ['REKAPAN MODAL', totalModalAll],
-                ['REKAPAN UNTUNG (KOTOR)', totalUntungKotor],
-                ['REKAPAN RUGI (RETUR)', 0],
-                ['TOTAL LABA BERSIH', totalLabaBersih],
-                ['TOTAL (MODAL + LABA BERSIH)', totalUntungKotor]
+                ['KATEGORI FAVORIT', kategoriFavorit],
+                ['SUB-KATEGORI FAVORIT', subKategoriFavorit],
+                ['RATA-RATA PENJUALAN/BULAN', rataRata]
             ];
+
 
             summaries.forEach((s, i) => {
                 const r = sumRowStart + i;
@@ -762,12 +800,9 @@ exports.generateExcelLaporan = async (req, res) => {
             const sumRowStart = startRow + mainData.length + 2;
             const totalLabaBersih = totalUntungKotor - totalModal;
             const summaries = [
-                ['REKAPAN MODAL', totalModal],
-                ['REKAPAN UNTUNG (KOTOR)', totalUntungKotor],
-                ['REKAPAN RUGI (RETUR)', 0],
-                ['TOTAL LABA BERSIH', totalLabaBersih],
-                ['TOTAL (MODAL + LABA BERSIH)', totalUntungKotor],
-                ['PRODUK PALING LARIS', `${produkPalingLaris.nama} (Terjual ${produkPalingLaris.qty} pcs)`]
+                ['KATEGORI FAVORIT', kategoriFavorit],
+                ['SUB-KATEGORI FAVORIT', subKategoriFavorit],
+                ['RATA-RATA PENJUALAN/BULAN', rataRata]
             ];
 
             summaries.forEach((s, i) => {
