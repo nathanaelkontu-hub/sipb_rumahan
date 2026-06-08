@@ -610,20 +610,19 @@ exports.generateExcelLaporan = async (req, res) => {
             summaries.forEach((s, i) => {
                 const r = endRow + 4 + i;
                 ws.getCell(r, 1).value = s[0];
-                ws.getCell(r, 2).value = s[1];
                 ws.mergeCells(`A${r}:B${r}`);
-                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'center' };
+                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'right' };
                 ws.getCell(r, 1).border = borderStyle;
+                
                 ws.getCell(r, 3).border = borderStyle;
                 if (typeof s[1] === 'number') {
                     ws.getCell(r, 3).value = s[1];
                     ws.getCell(r, 3).numFmt = currencyFmt;
-                    ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'right' };
+                    ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'left' };
                 } else {
                     ws.getCell(r, 3).value = s[1];
                     ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'left' };
                 }
-                ws.mergeCells(`C${r}:G${r}`);
             });
 
             ws.getColumn(1).width = 14; ws.getColumn(2).width = 18; ws.getColumn(3).width = 22;
@@ -673,20 +672,19 @@ exports.generateExcelLaporan = async (req, res) => {
             summaries.forEach((s, i) => {
                 const r = endRow + 4 + i;
                 ws.getCell(r, 1).value = s[0];
-                ws.getCell(r, 2).value = s[1];
                 ws.mergeCells(`A${r}:B${r}`);
-                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'center' };
+                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'right' };
                 ws.getCell(r, 1).border = borderStyle;
+                
                 ws.getCell(r, 3).border = borderStyle;
                 if (typeof s[1] === 'number') {
                     ws.getCell(r, 3).value = s[1];
                     ws.getCell(r, 3).numFmt = currencyFmt;
-                    ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'right' };
+                    ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'left' };
                 } else {
                     ws.getCell(r, 3).value = s[1];
                     ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'left' };
                 }
-                ws.mergeCells(`C${r}:G${r}`);
             });
 
             ws.getColumn(1).width = 25; ws.getColumn(2).width = 28;
@@ -739,20 +737,19 @@ exports.generateExcelLaporan = async (req, res) => {
             summaries.forEach((s, i) => {
                 const r = endRow + 4 + i;
                 ws.getCell(r, 1).value = s[0];
-                ws.getCell(r, 2).value = s[1];
                 ws.mergeCells(`A${r}:B${r}`);
-                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'center' };
+                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'right' };
                 ws.getCell(r, 1).border = borderStyle;
+                
                 ws.getCell(r, 3).border = borderStyle;
                 if (typeof s[1] === 'number') {
                     ws.getCell(r, 3).value = s[1];
                     ws.getCell(r, 3).numFmt = currencyFmt;
-                    ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'right' };
+                    ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'left' };
                 } else {
                     ws.getCell(r, 3).value = s[1];
                     ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'left' };
                 }
-                ws.mergeCells(`C${r}:G${r}`);
             });
 
             ws.getColumn(1).width = 16; ws.getColumn(2).width = 10;
@@ -801,20 +798,19 @@ exports.generateExcelLaporan = async (req, res) => {
             summaries.forEach((s, i) => {
                 const r = endRow + 4 + i;
                 ws.getCell(r, 1).value = s[0];
-                ws.getCell(r, 2).value = s[1];
                 ws.mergeCells(`A${r}:B${r}`);
-                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'center' };
+                ws.getCell(r, 1).alignment = { vertical: 'middle', horizontal: 'right' };
                 ws.getCell(r, 1).border = borderStyle;
+                
                 ws.getCell(r, 3).border = borderStyle;
                 if (typeof s[1] === 'number') {
                     ws.getCell(r, 3).value = s[1];
                     ws.getCell(r, 3).numFmt = currencyFmt;
-                    ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'right' };
+                    ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'left' };
                 } else {
                     ws.getCell(r, 3).value = s[1];
                     ws.getCell(r, 3).alignment = { vertical: 'middle', horizontal: 'left' };
                 }
-                ws.mergeCells(`C${r}:G${r}`);
             });
 
             ws.getColumn(1).width = 25; ws.getColumn(2).width = 18; ws.getColumn(3).width = 25;
