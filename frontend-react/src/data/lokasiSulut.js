@@ -24,7 +24,15 @@ export const lokasiSulut = {
       "Winangun I",
       "Winangun II"
     ],
-    "Paal Dua": [],
+    "Paal Dua": [
+      "Dendengan Luar",
+      "Dendengan Dalam",
+      "Kairagi Weru",
+      "Malendeng",
+      "Paal Dua",
+      "Perkamil",
+      "Ranomut"
+    ],
     "Mapanget": [
       "Bengkol",
       "Buha",

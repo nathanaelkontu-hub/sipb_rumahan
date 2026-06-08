@@ -24,7 +24,15 @@ const lokasiSulut = {
       "Winangun I",
       "Winangun II"
     ],
-    "Paal Dua": [],
+    "Paal Dua": [
+      "Dendengan Luar",
+      "Dendengan Dalam",
+      "Kairagi Weru",
+      "Malendeng",
+      "Paal Dua",
+      "Perkamil",
+      "Ranomut"
+    ],
     "Mapanget": [
       "Bengkol",
       "Buha",
@@ -2178,17 +2186,17 @@ const lokasiSulut = {
 };
 
 function isLokasiValid(kotaKabupaten, kecamatan, kelurahan) {
-    return Boolean(
-        kotaKabupaten &&
-        kecamatan &&
-        kelurahan &&
-        lokasiSulut[kotaKabupaten] &&
-        lokasiSulut[kotaKabupaten][kecamatan] &&
-        lokasiSulut[kotaKabupaten][kecamatan].includes(kelurahan)
-    );
+  return Boolean(
+    kotaKabupaten &&
+    kecamatan &&
+    kelurahan &&
+    lokasiSulut[kotaKabupaten] &&
+    lokasiSulut[kotaKabupaten][kecamatan] &&
+    lokasiSulut[kotaKabupaten][kecamatan].includes(kelurahan)
+  );
 }
 
 module.exports = {
-    lokasiSulut,
-    isLokasiValid
+  lokasiSulut,
+  isLokasiValid
 };
