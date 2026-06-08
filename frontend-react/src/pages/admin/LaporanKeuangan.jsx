@@ -613,45 +613,55 @@ export default function LaporanKeuangan() {
                     <tr style={{ borderBottom: "2px solid #e2e8f0" }}>
                       <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>No.</th>
                       
-                      {/* Kolom dinamis berdasarkan tipe laporan */}
-                      {(selectedLaporan.tipeLaporan === "detail") && (
-                        <>
-                          <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Tanggal</th>
-                          <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Kode Pesanan</th>
-                          <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Pelanggan</th>
-                          <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Daftar Barang</th>
-                          <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Total Qty</th>
-                          <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Total Belanja</th>
-                        </>
-                      )}
+                      
+                        {/* Kolom dinamis berdasarkan tipe laporan */}
+                        {(selectedLaporan.tipeLaporan === "detail") && (
+                          <>
+                            <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Tanggal</th>
+                            <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Kode Pesanan</th>
+                            <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Pelanggan</th>
+                            <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Daftar Barang</th>
+                            <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Total Qty</th>
+                            <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Total Belanja</th>
+                          </>
+                        )}
 
-                      {(selectedLaporan.tipeLaporan === "pelanggan") && (
-                        <>
-                          <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Nama Pelanggan</th>
-                          <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Email</th>
-                          <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Telepon</th>
-                          <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Jumlah Pesanan</th>
-                          <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Total Belanja</th>
-                        </>
-                      )}
+                        {(selectedLaporan.tipeLaporan === "pelanggan") && (
+                          <>
+                            <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Nama Pelanggan</th>
+                            <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Email</th>
+                            <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Telepon</th>
+                            <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Jml Pesanan</th>
+                            <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Total Belanja</th>
+                            <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Total Modal</th>
+                            <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Laba Bersih</th>
+                          </>
+                        )}
 
-                      {(selectedLaporan.tipeLaporan === "bulanan") && (
-                        <>
-                          <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Bulan</th>
-                          <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Tahun</th>
-                          <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Jumlah Pesanan</th>
-                          <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Total Pendapatan</th>
-                        </>
-                      )}
+                        {(selectedLaporan.tipeLaporan === "bulanan") && (
+                          <>
+                            <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Bulan</th>
+                            <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Tahun</th>
+                            <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Jml Pesanan</th>
+                            <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Total Pendapatan</th>
+                            <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Total Modal</th>
+                            <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Laba Bersih</th>
+                          </>
+                        )}
 
-                      {(!selectedLaporan.tipeLaporan || selectedLaporan.tipeLaporan === "ringkasan") && (
-                        <>
-                          <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Nama Barang</th>
-                          <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Jumlah Terjual</th>
-                          <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Total Pendapatan</th>
-                        </>
-                      )}
-                    </tr>
+                        {(!selectedLaporan.tipeLaporan || selectedLaporan.tipeLaporan === "ringkasan") && (
+                          <>
+                            <th style={{ padding: "12px 14px", textAlign: "center", fontSize: 12, fontWeight: 700, color: "#475569" }}>Periode</th>
+                            <th style={{ padding: "12px 14px", textAlign: "left", fontSize: 12, fontWeight: 700, color: "#475569" }}>Nama Barang</th>
+                            <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Jml Terjual</th>
+                            <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Hrg Jual Satuan</th>
+                            <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Hrg Beli Satuan</th>
+                            <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Subtotal Penjualan</th>
+                            <th style={{ padding: "12px 14px", textAlign: "right", fontSize: 12, fontWeight: 700, color: "#475569" }}>Laba per Item</th>
+                          </>
+                        )}
+                      </tr>
+
                   </thead>
                   <tbody>
                     {selectedData.map((row, idx) => {
@@ -661,47 +671,63 @@ export default function LaporanKeuangan() {
                         <tr key={idx} style={{ borderBottom: "1px solid #f1f5f9" }}>
                           <td style={{ padding: "12px 14px", fontSize: 13, color: "#64748b" }}>{idx + 1}</td>
                           
-                          {/* Data dinamis berdasarkan tipe laporan */}
-                          {(selectedLaporan.tipeLaporan === "detail") && (
-                            <>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155" }}>
-                                {new Date(row.tanggal_pesan).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
-                              </td>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#2563eb", fontWeight: 600 }}>{row.kode_pesanan}</td>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155", fontWeight: 500 }}>{row.nama_pelanggan}</td>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#475569" }}>{row.nama_barang || "-"}</td>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155", textAlign: "right" }}>{row.total_qty}</td>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#1e293b", fontWeight: 600, textAlign: "right" }}>{formatRupiah(row.total_harga)}</td>
-                            </>
-                          )}
+                          
+                            {/* Data dinamis berdasarkan tipe laporan */}
+                            {(selectedLaporan.tipeLaporan === "detail") && (
+                              <>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155" }}>
+                                  {new Date(row.tanggal_pesan).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
+                                </td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#2563eb", fontWeight: 600 }}>{row.kode_pesanan}</td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155", fontWeight: 500 }}>{row.nama_pelanggan}</td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#475569" }}>{row.nama_barang || "-"}</td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155", textAlign: "right" }}>{row.total_qty}</td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#1e293b", fontWeight: 600, textAlign: "right" }}>{formatRupiah(row.total_harga)}</td>
+                              </>
+                            )}
 
-                          {(selectedLaporan.tipeLaporan === "pelanggan") && (
-                            <>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#1e293b", fontWeight: 600 }}>{row.nama_pelanggan}</td>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#475569" }}>{row.email || "-"}</td>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#475569" }}>{row.telepon || "-"}</td>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155", textAlign: "right" }}>{row.jumlah_pesanan}</td>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#16a34a", fontWeight: 600, textAlign: "right" }}>{formatRupiah(row.total_belanja)}</td>
-                            </>
-                          )}
+                            {(selectedLaporan.tipeLaporan === "pelanggan") && (
+                              <>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#1e293b", fontWeight: 600 }}>{row.nama_pelanggan}</td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#475569" }}>{row.email || "-"}</td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#475569" }}>{row.telepon || "-"}</td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155", textAlign: "right" }}>{row.jumlah_pesanan}</td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#1e293b", fontWeight: 600, textAlign: "right" }}>{formatRupiah(row.total_belanja)}</td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#475569", textAlign: "right" }}>{formatRupiah(row.total_modal || 0)}</td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#10b981", fontWeight: 600, textAlign: "right" }}>{formatRupiah((row.total_belanja || 0) - (row.total_modal || 0))}</td>
+                              </>
+                            )}
 
-                          {(selectedLaporan.tipeLaporan === "bulanan") && (
-                            <>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155", fontWeight: 500 }}>{NAMA_BULAN[parseInt(row.bulan) - 1] || row.bulan}</td>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#475569" }}>{row.tahun}</td>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155", textAlign: "right" }}>{row.jumlah_pesanan}</td>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#1e293b", fontWeight: 600, textAlign: "right" }}>{formatRupiah(row.total_pendapatan)}</td>
-                            </>
-                          )}
+                            {(selectedLaporan.tipeLaporan === "bulanan") && (
+                              <>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155", fontWeight: 500 }}>{NAMA_BULAN[parseInt(row.bulan) - 1] || row.bulan}</td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#475569" }}>{row.tahun}</td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155", textAlign: "right" }}>{row.jumlah_pesanan}</td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#1e293b", fontWeight: 600, textAlign: "right" }}>{formatRupiah(row.total_pendapatan)}</td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#475569", textAlign: "right" }}>{formatRupiah(row.total_modal || 0)}</td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#10b981", fontWeight: 600, textAlign: "right" }}>{formatRupiah((row.total_pendapatan || 0) - (row.total_modal || 0))}</td>
+                              </>
+                            )}
 
-                          {(!selectedLaporan.tipeLaporan || selectedLaporan.tipeLaporan === "ringkasan") && (
-                            <>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155", fontWeight: 500 }}>{row.nama_barang}</td>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155", textAlign: "right" }}>{row.total_qty}</td>
-                              <td style={{ padding: "12px 14px", fontSize: 13, color: "#1e293b", fontWeight: 600, textAlign: "right" }}>{formatRupiah(row.total_pendapatan)}</td>
-                            </>
-                          )}
-                        </tr>
+                            {(!selectedLaporan.tipeLaporan || selectedLaporan.tipeLaporan === "ringkasan") && (
+                              <>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155", fontWeight: 500, textAlign: "center" }}>
+                                  {selectedLaporan.waktu}
+                                </td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155" }}>{row.nama_barang}</td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155", textAlign: "right" }}>{row.total_qty}</td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155", textAlign: "right" }}>
+                                  {row.harga_jual_max !== row.harga_jual_min ? 'Bervariasi' : formatRupiah(row.harga_jual_max)}
+                                </td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#334155", textAlign: "right" }}>{formatRupiah(row.harga_beli_satuan || 0)}</td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#1e293b", fontWeight: 600, textAlign: "right" }}>{formatRupiah(row.total_pendapatan)}</td>
+                                <td style={{ padding: "12px 14px", fontSize: 13, color: "#10b981", fontWeight: 600, textAlign: "right" }}>
+                                  {formatRupiah(row.total_pendapatan - (row.total_qty * (row.harga_beli_satuan || 0)))}
+                                </td>
+                              </>
+                            )}
+                          </tr>
+
                       );
                     })}
                   </tbody>
